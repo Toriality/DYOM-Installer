@@ -1,0 +1,49 @@
+DYOM V8.1 ReleaseNotes
+====================
+Minor Improvement
+*   Show objective numbers while browsing for "teleport to objective"
+*   Added some new animations, among which a weapon dependant AIM animation
+*   Added quick-browsing (using G/H) for animations.
+
+Bug Fixes
+*   Dont do actor selection for player animations
+*   Throwing driver out of cat after cutscene with player as passenger
+*   Fix crash, when car or actor used in an "actor" cammode, hets hidden right after the cutscene
+*   Improved resposiveness to checkpoints, in complex missions with lots of "must survive" items.
+
+
+
+DYOM V8.0 ReleaseNotes
+====================
+New Features
+*   Objective objects   
+     - touch
+     - damage
+     - photograph
+     - shoot
+*   Particle effects and various explosions
+*   Player animations
+*   5 new cutscene cameramodes
+     - actor 1st person
+	 - actor 3rd person
+	 - follow player
+	 - player 1st person
+	 - player 3rd person
+*   2 new cutscene properties
+     - skip widescreen
+	 - skip fade
+*   Scrolling through previous used camera locations for cutscenes
+*   Import/Export of objective texts
+*   Add/subtract money objectives
+	
+Minor Improvement
+*   Quick-browse (gh) for cars, actors and objects
+*   Added fast respawn option for pickups
+*   Option to Extend existing route
+
+Bug Fixes
+*   Crashes when using fire objects
+*   Fix hide/spawn problems when inserting/deleting objectives
+*   Objective texts not always cleared 
+*   Skipping a moving cutscene doesn't end the movement
+*   Fix crash when adding animated actor with route, without defining routepoints
