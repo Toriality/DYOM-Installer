@@ -1,36 +1,54 @@
+# Include Modern UI 2
 !include "MUI2.nsh"
 
-Name "DYOM 8.1 Installer"
+# Set the basic information
+Name "DYOM 8.1"
 OutFile "DYOM Setup.exe"
+BrandingText "Made by Toriality"
 Unicode True
-
 InstallDir "$DOCUMENTS\GTA San Andreas User Files"
-
 RequestExecutionLevel admin
-
-!define MUI_ABORTWARNING
-
-;!insertmacro MUI_LICENSE_PAGE "$EXEDIR\License.txt"
-!insertmacro MUI_PAGE_COMPONENTS
-
 Var INSTDIR2
 
+# Set MUI customizations
+!define MUI_ABORTWARNING
+!define MUI_BGCOLOR FFEECC
+!define MUI_DIRECTORYPAGE_BGCOLOR FFEECCF
+!define MUI_ICON "./dyom_icon.ico"
+!define MUI_HEADERIMAGE_BITMAP "./header.bmp"
+!define MUI_HEADERIMAGE_BITMAP_NOSTRETCH
+
+# Start Components Page
+!insertmacro MUI_PAGE_COMPONENTS
+
 # First directory page.
+# GTA San Andreas User Files
+!define MUI_PAGE_HEADER_TEXT "GTA San Andreas: User Files Location"
+!define MUI_PAGE_HEADER_SUBTEXT "Enter your GTASA User Files directory location"
+!define MUI_DIRECTORYPAGE_TEXT_TOP "This folder is normally located at My Documents\GTA San Andreas User Files\.$\r$\n$\r$\nIf you have PortableGTA modification, your User Files is normally located at game's root directory. " 
+!define MUI_DIRECTORYPAGE_TEXT_DESTINATION  "GTA San Andreas User Files"
 !insertmacro MUI_PAGE_DIRECTORY
 
 # Second directory page.
+# GTA San Andreas Root Folder
 !define MUI_DIRECTORYPAGE_VARIABLE $INSTDIR2
 !define MUI_PAGE_CUSTOMFUNCTION_PRE DirectoryPre
+!define MUI_PAGE_HEADER_TEXT "GTA San Andreas Root Directory"
+!define MUI_PAGE_HEADER_SUBTEXT "Enter your GTASA directory where your GTA_SA.exe is located"
+!define MUI_DIRECTORYPAGE_TEXT_TOP "This folder is normally located at C:\Program Files(x86)\Rockstar Games\GTA San Andreas\$\r$\n$\r$\nIf you have the Steam Version it is normally located at:$\r$\nC:\Program Files(x86)\Steam\steamapps\common\Grand Theft Auto San Andreas\.$\r$\n$\r$\nIf you installed your game in another location, please insert this location in the input box bellow."
+!define MUI_DIRECTORYPAGE_TEXT_DESTINATION  "GTA San Andreas Folder"
 !insertmacro MUI_PAGE_DIRECTORY
 
 Function DirectoryPre
- StrCpy $INSTDIR2 "$PROGRAMFILES\Rockstar James\Grand Theft Fausto"
+ StrCpy $INSTDIR2 "$PROGRAMFILES\Rockstar Games\GTA San Andreas"
 FunctionEnd
 
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_LANGUAGE "English"
 
-
+# Sections
+# TODO: See if you can delete repeated SetOutPath lines
+# 		without breaking the code.
 SectionGroup "DYOM 8.1" DYOM
 	Section "DYOM Required Files" DYOM_Files
 		SectionIn 1
@@ -105,17 +123,15 @@ SectionGroup "Axoez's Addons" Axoez
 	SectionEnd
 SectionGroupEnd
 
-;SectionGroup "Kumamon's Addons" Kumamon
-;	Section "SA:MP Objects" SAMP
-;		SetOutPath "$INSTDIR2\modloader\"
-;		File /r ".\KUMAMON\SAMP Objects"
-;	SectionEnd
-;SectionGroupEnd
-;
+SectionGroup "Kumamon's Addons" Kumamon
+	Section "SA:MP Objects" SAMP
+		SetOutPath "$INSTDIR2\modloader\"
+		File /r ".\KUMAMON\SAMP Objects"
+	SectionEnd
+SectionGroupEnd
 
-
-;Descriptions
-
+# Sections descriptions
+# TODO: Refactor the code, LangString is not needed (yet?)
   LangString DYOM_S ${LANG_ENGLISH} "Design Your Own Mission Files"
   LangString DYOM_Files_S ${LANG_ENGLISH} "All the files necessary for running Design Your Own Mission 8.1 modification. They are installed into your GTA San Andreas User Files directory."
   LangString DYOM_Dependencies_S ${LANG_ENGLISH} "All the dependencies needed to run DYOM without crashes and major issues. They are installed into your GTA San Andreas root directory."
@@ -161,6 +177,15 @@ SectionGroupEnd
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
   
 
+# Set the two first DYOM sections as required sections
+# These sections are needed to be installed because
+# 1. It installs the DYOM modification into User Files
+# 2. It installs the necessary dependencies for DYOM to work properly
+#		- CLEO 4 Library
+#		- SilentPatch
+#		- DYOM AudioFX (Since most designers use it already)
+#		- GTA_SA.exe 1.0
+#		- Modloader (Needed in order to load SilentPatch and AudioFX)
 Function .onInit
   SectionSetFlags ${DYOM_Files} 17
   SectionSetFlags ${DYOM_Dependencies} 17
