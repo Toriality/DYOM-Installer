@@ -1,5 +1,6 @@
-# Include Modern UI 2
-!include "MUI2.nsh"
+!include "MUI2.nsh"		# Modern UI 2
+!include "Locate.nsh"	# Locate Plugin 
+!include "LogicLib.nsh"	# LogicLib
 
 # Set the basic information
 Name "DYOM 8.1"
@@ -8,7 +9,19 @@ BrandingText "Made by Toriality"
 Unicode True
 InstallDir "$DOCUMENTS\GTA San Andreas User Files"
 RequestExecutionLevel admin
+
+# Variables
 Var INSTDIR2
+Var IS_STEAM_GTASA ; steam's version exe is gta-sa instead of gta_sa
+
+# Most common directories where GTA SA can be found
+# Default installation directory from GTA SA setup
+!define DEFAULT_DIR "$PROGRAMFILES\Rockstar Games\GTA San Andreas\"
+# Default installation directory from Steam version
+!define STEAM_DIR "$PROGRAMFILES\Steam\steamapps\common\Grand Theft Auto San Andreas"
+!define OTHER_DIR_STEAM "D:\SteamLibrary\steamapps\common\Grand Theft Auto San Andrea"
+# MixMods recommend users to install their GTA SA folder into Documents
+!define MIXMODS_DIR "$DOCUMENTS"
 
 # Set MUI customizations
 !define MUI_ABORTWARNING
@@ -32,15 +45,31 @@ Var INSTDIR2
 # Second directory page.
 # GTA San Andreas Root Folder
 !define MUI_DIRECTORYPAGE_VARIABLE $INSTDIR2
-!define MUI_PAGE_CUSTOMFUNCTION_PRE DirectoryPre
+!define MUI_PAGE_CUSTOMFUNCTION_LEAVE DirectoryLeave
 !define MUI_PAGE_HEADER_TEXT "GTA San Andreas Root Directory"
 !define MUI_PAGE_HEADER_SUBTEXT "Enter your GTASA directory where your GTA_SA.exe is located"
 !define MUI_DIRECTORYPAGE_TEXT_TOP "This folder is normally located at C:\Program Files(x86)\Rockstar Games\GTA San Andreas\$\r$\n$\r$\nIf you have the Steam Version it is normally located at:$\r$\nC:\Program Files(x86)\Steam\steamapps\common\Grand Theft Auto San Andreas\.$\r$\n$\r$\nIf you installed your game in another location, please insert this location in the input box bellow."
 !define MUI_DIRECTORYPAGE_TEXT_DESTINATION  "GTA San Andreas Folder"
 !insertmacro MUI_PAGE_DIRECTORY
 
-Function DirectoryPre
- StrCpy $INSTDIR2 "$PROGRAMFILES\Rockstar Games\GTA San Andreas"
+
+Function DirectoryLeave
+	# Detect if the inserted directory contains the GTA_SA.exe
+	# If there is no such file, the user will be prompted 
+	# to insert a valid folder
+	IfFileExists "$INSTDIR2/GTA?SA.exe" PathGood 0
+		MessageBox MB_OK|MB_ICONEXCLAMATION "Invalid folder! GTA_SA.exe was not found in the selected directory." IDOK retry
+		retry:
+			Abort
+	PathGood:
+		# Checks if the GTA executable is "gta-sa.exe" - which is different from
+		# our executable (GTA_SA.exe), if so, sets IS_STEAM_GTASA variable to true,
+		# so we can delete the executable later when installing DYOM
+		IfFileExists "$INSTDIR2/gta-sa.exe" ShouldDelete ShouldContinue
+		ShouldDelete:
+			StrCpy $IS_STEAM_GTASA "True"
+		ShouldContinue:
+			MessageBox MB_YESNO "GTA SA Root set to:$\r$\n$INSTDIR2$\r$\nGTA SA User Files set to:$\r$\n$INSTDIR$\r$\nIs this correct?" IDYES 0 IDNO retry
 FunctionEnd
 
 !insertmacro MUI_PAGE_INSTFILES
@@ -59,6 +88,16 @@ SectionGroup "DYOM 8.1" DYOM
 	Section "DYOM Dependencies" DYOM_Dependencies
 		SectionIn 2
 		SetOutPath "$INSTDIR2"
+		# If IS_STEAM_GTASA was set to true during .onInit,
+		# the "gta-sa.exe" must be removed and replaced by a 1.0 version
+		# of "GTA_SA.exe" renamed to "gta-sa.exe"
+		StrCmp $IS_STEAM_GTASA "True" StartDelete SkipDelete
+		StartDelete:
+			Delete "$INSTDIR2\gta-sa.exe"
+			File /r ".\_DYOM_DEPENDENCIES\"
+			Rename "$INSTDIR2\GTA_SA.exe" "$INSTDIR2\gta-sa.exe"
+			Goto +3
+		SkipDelete:
 		File /r ".\_DYOM_DEPENDENCIES\"
 		SectionEnd
 SectionGroupEnd
@@ -177,16 +216,54 @@ SectionGroupEnd
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
   
 
-# Set the two first DYOM sections as required sections
-# These sections are needed to be installed because
-# 1. It installs the DYOM modification into User Files
-# 2. It installs the necessary dependencies for DYOM to work properly
-#		- CLEO 4 Library
-#		- SilentPatch
-#		- DYOM AudioFX (Since most designers use it already)
-#		- GTA_SA.exe 1.0
-#		- Modloader (Needed in order to load SilentPatch and AudioFX)
+
 Function .onInit
-  SectionSetFlags ${DYOM_Files} 17
-  SectionSetFlags ${DYOM_Dependencies} 17
+	# Set the two first DYOM sections as required sections
+	# These sections are needed to be installed because
+	# 1. It installs the DYOM modification into User Files
+	# 2. It installs the necessary dependencies for DYOM to work properly
+	#		- CLEO 4 Library
+	#		- SilentPatch
+	#		- DYOM AudioFX (Since most designers use it already)
+	#		- GTA_SA.exe 1.0
+	#		- Modloader (Needed in order to load SilentPatch and AudioFX)
+	SectionSetFlags ${DYOM_Files} 17
+	SectionSetFlags ${DYOM_Dependencies} 17
+	
+	# Makes a search into the most common GTA installation folders to
+	# check where the GTA_SA.exe (or gta-sa.exe) is located
+	${locate::Open} "${STEAM_DIR}|${MIXMODS_DIR}|C:\|$PROGRAMFILES|${OTHER_DIR_STEAM}|D:\" `\
+					/F=1 \
+					/D=0 \
+					/M=gta?sa.exe \
+					/A=-HIDDEN|-SYSTEM \
+					/-PN=Temp|WINDOWS` $0
+					
+	StrCmp $0 -1 0 loop
+
+	loop:
+	${locate::Find} $0 $1 $2 $3 $4 $5 $6
+	#$var1        "path\name"
+	#$var2        "path"
+	#$var3        "name"
+	#$var4        "size"       
+	#$var5        "time"       
+	#$var6        "attributes" 
+	
+	# Sets gta root folder (installdir2) to the path variable
+	StrCpy $INSTDIR2 $2
+	
+	#Free memory
+	${locate::Close} $0
+	${locate::Unload}
 FunctionEnd
+
+
+
+
+
+
+
+
+
+
