@@ -76,8 +76,6 @@ FunctionEnd
 !insertmacro MUI_LANGUAGE "English"
 
 # Sections
-# TODO: See if you can delete repeated SetOutPath lines
-# 		without breaking the code.
 SectionGroup "DYOM 8.1" DYOM
 	Section "DYOM Required Files" DYOM_Files
 		SectionIn 1
@@ -109,113 +107,77 @@ SectionGroup "SIZZZ's Addons" SIZZZ
 	SectionEnd
 	
 	Section "Machine Gun" MachineGun
-		SetOutPath "$INSTDIR2\modloader\"
 		File /r ".\SIZZZ\Machine Gun"
 	SectionEnd
 
 	Section "Darkness Effect" DarkEffect
-		SetOutPath "$INSTDIR2\modloader\"
 		File /r ".\SIZZZ\Darkness Effect"
 	SectionEnd
 	
 
 	Section "Working Dynamites" WDynamites
-		SetOutPath "$INSTDIR2\modloader\"
 		File /r ".\SIZZZ\Working Dynamites"
 	SectionEnd
 
 	Section "Road Spikes" RoadSpikes
-		SetOutPath "$INSTDIR2\modloader\"
 		File /r ".\SIZZZ\Road Spikes"
 	SectionEnd
 
 	Section "Disable teleport health regeneration" TeleportHealth
-		SetOutPath "$INSTDIR2\modloader\"
 		File /r ".\SIZZZ\Disable Teleport Health Regeneration"
 	SectionEnd
 
 	Section "CCTV Cameras" CCTV
-		SetOutPath "$INSTDIR2\modloader\"
 		File /r ".\SIZZZ\CCTV Camera"
 	SectionEnd
 
 	Section "Phone talk animation" PhoneAnim
-		SetOutPath "$INSTDIR2\modloader\"
 		File /r ".\SIZZZ\Phone Animation"
 	SectionEnd
 
 	Section "Weapon Shops" WeaponShops
-		SetOutPath "$INSTDIR2\modloader\"
 		File /r ".\SIZZZ\Weapon Shops"
 	SectionEnd
 SectionGroupEnd
 
 SectionGroup "Axoez's Addons" Axoez
 	Section "Time selection in milliseconds" TimeMs
-		SetOutPath "$INSTDIR2\modloader\"
 		File /r ".\AXOEZ\Time Selection in Milliseconds"
 	SectionEnd
 	
 	Section "Phonecall Skip" PhoneSkip
-		SetOutPath "$INSTDIR2\modloader\"
 		File /r ".\AXOEZ\Phonecall Skip"
 	SectionEnd
 SectionGroupEnd
 
 SectionGroup "Kumamon's Addons" Kumamon
 	Section "SA:MP Objects" SAMP
-		SetOutPath "$INSTDIR2\modloader\"
 		File /r ".\KUMAMON\SAMP Objects"
 	SectionEnd
 SectionGroupEnd
 
 # Sections descriptions
-# TODO: Refactor the code, LangString is not needed (yet?)
-  LangString DYOM_S ${LANG_ENGLISH} "Design Your Own Mission Files"
-  LangString DYOM_Files_S ${LANG_ENGLISH} "All the files necessary for running Design Your Own Mission 8.1 modification. They are installed into your GTA San Andreas User Files directory."
-  LangString DYOM_Dependencies_S ${LANG_ENGLISH} "All the dependencies needed to run DYOM without crashes and major issues. They are installed into your GTA San Andreas root directory."
-  
-  LangString SIZZZ_S ${LANG_ENGLISH} "Add-ons made by SIZZZ."
-  LangString DYOM_Sharp_S ${LANG_ENGLISH} "An extensive script that adds many new features, new tools and fixes some bugs. With this add-on, designing mission will be more efficient and fast."
-  LangString MachineGun_S ${LANG_ENGLISH} "Adds a working machine gun to your missions."
-  LangString DarkEffect_S ${LANG_ENGLISH} "Creates a very dark ambience effect when a certain weather is selected."
-  LangString WDynamites_S ${LANG_ENGLISH} "The dynamite object explodes when the player gets near it."
-  LangString RoadSpikes_S ${LANG_ENGLISH} "With this script, road spikes turn from an ordinary decoration into real working spikes."
-  LangString TeleportHealth_S ${LANG_ENGLISH} "This will stop the player's health from regenerating when you have a teleport objective. With works if you teleport the player using the same skin."
-  LangString CCTV_S ${LANG_ENGLISH} "A working CCTV camera that fails the mission if the players gets detected for a certain ammount of time inside the camera radius. Recommended for stealth missions."
-  LangString PhoneAnim_S ${LANG_ENGLISH} "Adds a phone talking animation."
-  LangString WeaponShops_S ${LANG_ENGLISH} "Adds the hability to have up to 5 weapons stores into your mission, where you can buy almost every kind of weapon."
-
-  LangString Axoez_S ${LANG_ENGLISH} "Add-ons made by Axoez / RaXo."
-  LangString TimeMs_S ${LANG_ENGLISH} "Adds the hability to select the time in milliseconds."
-  LangString PhoneSkip_S ${LANG_ENGLISH} "With this script, you can skip the phonecalls. Recommended for missions with long phonecall dialogues."
-
-  LangString Kumamon_S ${LANG_ENGLISH} "Add-ons made by Kumamon"
-  LangString SAMP_S ${LANG_ENGLISH} "Adds about 1500 new objects into the game. DYOM# is required to use these objects."
-
-  
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-	!insertmacro MUI_DESCRIPTION_TEXT ${DYOM} $(DYOM_S)
-    !insertmacro MUI_DESCRIPTION_TEXT ${DYOM_Files} $(DYOM_Files_S)
-	!insertmacro MUI_DESCRIPTION_TEXT ${DYOM_Dependencies} $(DYOM_Dependencies_S)
-	!insertmacro MUI_DESCRIPTION_TEXT ${SIZZZ} $(SIZZZ_S)
-	!insertmacro MUI_DESCRIPTION_TEXT ${DYOM_Sharp} $(DYOM_Sharp_S)
-	!insertmacro MUI_DESCRIPTION_TEXT ${MachineGun} $(MachineGun_S)
-	!insertmacro MUI_DESCRIPTION_TEXT ${DarkEffect} $(DarkEffect_S)
-	!insertmacro MUI_DESCRIPTION_TEXT ${WDynamites} $(WDynamites_S)
-	!insertmacro MUI_DESCRIPTION_TEXT ${RoadSpikes} $(RoadSpikes_S)
-	!insertmacro MUI_DESCRIPTION_TEXT ${TeleportHealth} $(TeleportHealth_S)
-	!insertmacro MUI_DESCRIPTION_TEXT ${CCTV} $(CCTV_S)
-	!insertmacro MUI_DESCRIPTION_TEXT ${PhoneAnim} $(PhoneAnim_S)
-	!insertmacro MUI_DESCRIPTION_TEXT ${WeaponShops} $(WeaponShops_S)
-	!insertmacro MUI_DESCRIPTION_TEXT ${Axoez} $(Axoez_S)
-	!insertmacro MUI_DESCRIPTION_TEXT ${TimeMs} $(TimeMs_S)
-	!insertmacro MUI_DESCRIPTION_TEXT ${PhoneSkip} $(PhoneSkip_S)
-	!insertmacro MUI_DESCRIPTION_TEXT ${Kumamon} $(Kumamon_S)
-	!insertmacro MUI_DESCRIPTION_TEXT ${SAMP} $(SAMP_S)
+	!insertmacro MUI_DESCRIPTION_TEXT ${DYOM} "Design Your Own Mission Files"
+    !insertmacro MUI_DESCRIPTION_TEXT ${DYOM_Files} "All the files necessary for running Design Your Own Mission 8.1 modification. They are installed into your GTA San Andreas User Files directory."
+	!insertmacro MUI_DESCRIPTION_TEXT ${DYOM_Dependencies} "All the dependencies needed to run DYOM without crashes and major issues. They are installed into your GTA San Andreas root directory."
+	!insertmacro MUI_DESCRIPTION_TEXT ${SIZZZ} "Add-ons made by SIZZZ."
+	!insertmacro MUI_DESCRIPTION_TEXT ${DYOM_Sharp} "An extensive script that adds many new features, new tools and fixes some bugs. With this add-on, designing mission will be more efficient and fast."
+	!insertmacro MUI_DESCRIPTION_TEXT ${MachineGun} "Adds a working machine gun to your missions."
+	!insertmacro MUI_DESCRIPTION_TEXT ${DarkEffect} "Creates a very dark ambience effect when a certain weather is selected."
+	!insertmacro MUI_DESCRIPTION_TEXT ${WDynamites} "The dynamite object explodes when the player gets near it."
+	!insertmacro MUI_DESCRIPTION_TEXT ${RoadSpikes} "With this script, road spikes turn from an ordinary decoration into real working spikes."
+	!insertmacro MUI_DESCRIPTION_TEXT ${TeleportHealth} "This will stop the player's health from regenerating when you have a teleport objective. With works if you teleport the player using the same skin."
+	!insertmacro MUI_DESCRIPTION_TEXT ${CCTV} "A working CCTV camera that fails the mission if the players gets detected for a certain ammount of time inside the camera radius. Recommended for stealth missions."
+	!insertmacro MUI_DESCRIPTION_TEXT ${PhoneAnim} "Adds a phone talking animation."
+	!insertmacro MUI_DESCRIPTION_TEXT ${WeaponShops} "Adds the hability to have up to 5 weapons stores into your mission, where you can buy almost every kind of weapon."
+	!insertmacro MUI_DESCRIPTION_TEXT ${Axoez} "Add-ons made by Axoez / RaXo."
+	!insertmacro MUI_DESCRIPTION_TEXT ${TimeMs} "Adds the hability to select the time in milliseconds."
+	!insertmacro MUI_DESCRIPTION_TEXT ${PhoneSkip} "With this script, you can skip the phonecalls. Recommended for missions with long phonecall dialogues."
+	!insertmacro MUI_DESCRIPTION_TEXT ${Kumamon} "Add-ons made by Kumamon"
+	!insertmacro MUI_DESCRIPTION_TEXT ${SAMP} "Adds about 1500 new objects into the game. DYOM# is required to use these objects."
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
   
-
 
 Function .onInit
 	# Set the two first DYOM sections as required sections
