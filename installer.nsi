@@ -103,7 +103,7 @@ SectionGroupEnd
 SectionGroup "SIZZZ's Addons" SIZZZ
 	Section "DYOM#" DYOM_Sharp
 		SetOutPath "$INSTDIR2\modloader\"
-		File /r ".\SIZZZ\DYOM#"
+		File /r ".\SIZZZ\DYOM Sharp"
 	SectionEnd
 	
 	Section "Machine Gun" MachineGun
@@ -124,7 +124,7 @@ SectionGroup "SIZZZ's Addons" SIZZZ
 	SectionEnd
 
 	Section "Disable teleport health regeneration" TeleportHealth
-		File /r ".\SIZZZ\Disable Teleport Health Regeneration"
+		File /r ".\SIZZZ\Disable TP Health Regen"
 	SectionEnd
 
 	Section "CCTV Cameras" CCTV
