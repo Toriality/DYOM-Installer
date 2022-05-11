@@ -1,0 +1,15 @@
+{
+  "name": "DYOM",
+  "version": "8.1.0",
+  "description": "DYOM Executable",
+  "main": "main.js",
+  "author": "Toriality",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev": "nodemon --watch . --exec \"electron . --debug\""
+  },
+  "devDependencies": {
+    "electron": "^18.2.0"
+  }
+}

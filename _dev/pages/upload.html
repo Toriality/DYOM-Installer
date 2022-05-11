@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <link rel="stylesheet" href=".\styles\styles.css" />
+    <link rel="stylesheet" href=".\styles\forms.css" />
+    <title>Upload a Mission</title>
+  </head>
+  <body>
+    <form>
+      <div id="frm-main">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required />
+        <label for="author">Author:</label>
+        <input type="text" id="author" required />
+      </div>
+
+      <div id="frm-mission">
+        <label for="mission">
+          <input id="mission" type="file" accept=".dat" required />
+          <p>Select mission file</p>
+          <select id="sel-mission" multiple></select>
+        </label>
+      </div>
+
+      <div id="frm-2">
+        <div>
+          <label for="sd">
+            <input id="sd" type="file" webkitdirectory directory multiple />
+            <p>Select SD folder</p>
+            <select id="sel-sd" multiple></select>
+          </label>
+        </div>
+        <div>
+          <label for="mods">
+            <input id="mods" type="file" webkitdirectory directory multiple />
+            <p>Select modloader folder</p>
+            <select id="sel-mods" multiple></select>
+          </label>
+        </div>
+      </div>
+
+      <div id="addons">
+        <p>Required add-ons:</p>
+        <div>
+          <div>
+            <input type="checkbox" id="machine-gun" />
+            <label for="machine-gun">Machine Gun</label>
+          </div>
+          <div>
+            <input type="checkbox" id="dark-effect" />
+            <label for="dark-effect">Darkness effect</label>
+          </div>
+          <div>
+            <input type="checkbox" id="w-dynamites" />
+            <label for="w-dynamites">Working Dynamites</label>
+          </div>
+          <div>
+            <input type="checkbox" id="road-spikes" />
+            <label for="road-spikes">Road spikes</label>
+          </div>
+          <div>
+            <input type="checkbox" id="teleport-health" />
+            <label for="teleport-health"
+              >Disable teleport health regeneration</label
+            >
+          </div>
+          <div>
+            <input type="checkbox" id="cctv" />
+            <label for="cctv">CCTV Camera</label>
+          </div>
+          <div>
+            <input type="checkbox" id="phone-anim" />
+            <label for="phone-anim">Phone talk animation</label>
+          </div>
+          <div>
+            <input type="checkbox" id="weapon-shops" />
+            <label for="weapon-shops">Weapon shops</label>
+          </div>
+          <div>
+            <input type="checkbox" id="samp" />
+            <label for="samp">SAMP Objects</label>
+          </div>
+        </div>
+      </div>
+      <button id="upload">Create mission</button>
+    </form>
+
+    <script src=".\scripts\upload.js"></script>
+  </body>
+</html>

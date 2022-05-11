@@ -1,0 +1,19 @@
+{
+  "version": "8.1",
+  "instDir": "C:/Users/pcrel/Documents/GTA San Andreas User Files",
+  "instDir2": "C:/Users/pcrel/Documents/GTA San Andreas",
+  "addons": [
+    "DYOM_Sharp",
+    "MachineGun",
+    "DarkEffect",
+    "WDynamites",
+    "RoadSpikes",
+    "TeleportHealth",
+    "CCTV",
+    "PhoneAnim",
+    "WeaponShops",
+    "TimeMs",
+    "PhoneSkip",
+    "SAMP"
+  ]
+}
