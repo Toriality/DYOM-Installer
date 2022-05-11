@@ -1,6 +1,10 @@
 !include "MUI2.nsh"		# Modern UI 2
 !include "Locate.nsh"	# Locate Plugin 
 !include "LogicLib.nsh"	# LogicLib
+!include "StrFunc.nsh"	# String functions
+
+# Initialize String Functions
+${StrRep}
 
 # Set the basic information
 Name "DYOM 8.1"
@@ -259,11 +263,14 @@ Function .onInstSuccess
 	# Creates a .JSON file to store all the install information
 	# (i.e: addons installed, dyom version)
 	FileOpen $8 "$INSTDIR\INST.json" w
+	# JSON syntax requires forward slashes (/)
+	${StrRep} $0 "$INSTDIR" "\" "/"
+	${StrRep} $1 "$INSTDIR2" "\" "/"
 	# Writes into the created .json file the installed addons
 	FileWrite $8 `{$\n$\t\
 						"version": "$VERSION",$\n$\t\
-						"instDir": "$INSTDIR",$\n$\t\
-						"instDir2": "$INSTDIR2",$\n$\t\
+						"instDir": "$0",$\n$\t\
+						"instDir2": "$1",$\n$\t\
 						"addons": [$INSTALLED_ADDONS]$\n\
 					}`
 	FileClose $8
