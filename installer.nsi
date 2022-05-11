@@ -13,6 +13,8 @@ RequestExecutionLevel admin
 # Variables
 Var INSTDIR2
 Var IS_STEAM_GTASA ; steam's version exe is gta-sa instead of gta_sa
+Var INSTALLED_ADDONS ; list of addons installed by user
+Var VERSION
 
 # Most common directories where GTA SA can be found
 # Default installation directory from GTA SA setup
@@ -72,7 +74,10 @@ Function DirectoryLeave
 			MessageBox MB_YESNO "GTA SA Root set to:$\r$\n$INSTDIR2$\r$\nGTA SA User Files set to:$\r$\n$INSTDIR$\r$\nIs this correct?" IDYES 0 IDNO retry
 FunctionEnd
 
+# Install page
 !insertmacro MUI_PAGE_INSTFILES
+
+# Set default language as English
 !insertmacro MUI_LANGUAGE "English"
 
 # Sections
@@ -80,7 +85,7 @@ SectionGroup "DYOM 8.1" DYOM
 	Section "DYOM Required Files" DYOM_Files
 		SectionIn 1
 		SetOutPath "$INSTDIR"
-		File /r ".\_DYOM_FILES\"
+		;File /r ".\_DYOM_FILES\"
 		SectionEnd
 
 	Section "DYOM Dependencies" DYOM_Dependencies
@@ -92,67 +97,94 @@ SectionGroup "DYOM 8.1" DYOM
 		StrCmp $IS_STEAM_GTASA "True" StartDelete SkipDelete
 		StartDelete:
 			Delete "$INSTDIR2\gta-sa.exe"
-			File /r ".\_DYOM_DEPENDENCIES\"
+			;File /r ".\_DYOM_DEPENDENCIES\"
 			Rename "$INSTDIR2\GTA_SA.exe" "$INSTDIR2\gta-sa.exe"
 			Goto +3
 		SkipDelete:
-		File /r ".\_DYOM_DEPENDENCIES\"
+		;File /r ".\_DYOM_DEPENDENCIES\"
 		SectionEnd
 SectionGroupEnd
 
 SectionGroup "SIZZZ's Addons" SIZZZ
 	Section "DYOM#" DYOM_Sharp
-		SetOutPath "$INSTDIR2\modloader\"
-		File /r ".\SIZZZ\DYOM Sharp"
+	;	SetOutPath "$INSTDIR2\modloader\"
+	;	File /r ".\SIZZZ\DYOM Sharp"
+		;if installed_addons = '', add raw data
+		;if installed_addons not '' format then write
+		StrCpy $7 '"DYOM_Sharp"'
+		Call WriteJSON
 	SectionEnd
 	
 	Section "Machine Gun" MachineGun
-		File /r ".\SIZZZ\Machine Gun"
+	;	File /r ".\SIZZZ\Machine Gun"
+		StrCpy $7 '"MachineGun"'
+		Call WriteJSON
+
 	SectionEnd
 
 	Section "Darkness Effect" DarkEffect
-		File /r ".\SIZZZ\Darkness Effect"
+	;	File /r ".\SIZZZ\Darkness Effect"
+		StrCpy $7 '"DarkEffect"'
+		Call WriteJSON
 	SectionEnd
 	
 
 	Section "Working Dynamites" WDynamites
-		File /r ".\SIZZZ\Working Dynamites"
+	;	File /r ".\SIZZZ\Working Dynamites"
+		StrCpy $7 '"WDynamites"'
+		Call WriteJSON
 	SectionEnd
 
 	Section "Road Spikes" RoadSpikes
-		File /r ".\SIZZZ\Road Spikes"
+	;	File /r ".\SIZZZ\Road Spikes"
+		StrCpy $7 '"RoadSpikes"'
+		Call WriteJSON
 	SectionEnd
 
 	Section "Disable teleport health regeneration" TeleportHealth
-		File /r ".\SIZZZ\Disable TP Health Regen"
+	;	File /r ".\SIZZZ\Disable TP Health Regen"
+		StrCpy $7 '"TeleportHealth"'
+		Call WriteJSON
 	SectionEnd
 
 	Section "CCTV Cameras" CCTV
-		File /r ".\SIZZZ\CCTV Camera"
+	;	File /r ".\SIZZZ\CCTV Camera"
+		StrCpy $7 '"CCTV"'
+		Call WriteJSON
 	SectionEnd
 
 	Section "Phone talk animation" PhoneAnim
-		File /r ".\SIZZZ\Phone Animation"
+	;	File /r ".\SIZZZ\Phone Animation"
+		StrCpy $7 '"PhoneAnim"'
+		Call WriteJSON
 	SectionEnd
 
 	Section "Weapon Shops" WeaponShops
-		File /r ".\SIZZZ\Weapon Shops"
+	;	File /r ".\SIZZZ\Weapon Shops"
+		StrCpy $7 '"WeaponShops"'
+		Call WriteJSON
 	SectionEnd
 SectionGroupEnd
 
 SectionGroup "Axoez's Addons" Axoez
 	Section "Time selection in milliseconds" TimeMs
-		File /r ".\AXOEZ\Time Selection in Milliseconds"
+	;	File /r ".\AXOEZ\Time Selection in Milliseconds"
+		StrCpy $7 '"TimeMs"'
+		Call WriteJSON
 	SectionEnd
 	
 	Section "Phonecall Skip" PhoneSkip
-		File /r ".\AXOEZ\Phonecall Skip"
+	;	File /r ".\AXOEZ\Phonecall Skip"
+		StrCpy $7 '"PhoneSkip"'
+		Call WriteJSON
 	SectionEnd
 SectionGroupEnd
 
 SectionGroup "Kumamon's Addons" Kumamon
 	Section "SA:MP Objects" SAMP
-		File /r ".\KUMAMON\SAMP Objects"
+	;	File /r ".\KUMAMON\SAMP Objects"
+		StrCpy $7 '"SAMP"'
+		Call WriteJSON
 	SectionEnd
 SectionGroupEnd
 
@@ -191,6 +223,9 @@ Function .onInit
 	#		- Modloader (Needed in order to load SilentPatch and AudioFX)
 	SectionSetFlags ${DYOM_Files} 17
 	SectionSetFlags ${DYOM_Dependencies} 17
+
+	# DYOM VERSION
+	StrCpy $VERSION '8.1'
 	
 	# Makes a search into the most common GTA installation folders to
 	# check where the GTA_SA.exe (or gta-sa.exe) is located
@@ -220,6 +255,32 @@ Function .onInit
 	${locate::Unload}
 FunctionEnd
 
+Function .onInstSuccess
+	# Creates a .JSON file to store all the install information
+	# (i.e: addons installed, dyom version)
+	FileOpen $8 "$INSTDIR\INST.json" w
+	# Writes into the created .json file the installed addons
+	FileWrite $8 `{$\n$\t\
+						"version": "$VERSION",$\n$\t\
+						"instDir": "$INSTDIR",$\n$\t\
+						"instDir2": "$INSTDIR2",$\n$\t\
+						"addons": [$INSTALLED_ADDONS]$\n\
+					}`
+	FileClose $8
+FunctionEnd
+
+Function WriteJSON
+	# Function for formatting the data to be inserted into
+	# the .json file
+	StrCmp $INSTALLED_ADDONS '' WriteData FormatThenWrite
+	WriteData:
+		StrCpy $INSTALLED_ADDONS $7
+		Return
+	FormatThenWrite:
+		StrCpy $INSTALLED_ADDONS '$INSTALLED_ADDONS, $7'
+		Return
+FunctionEnd
+	
 
 
 
