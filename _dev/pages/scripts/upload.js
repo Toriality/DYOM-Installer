@@ -40,7 +40,7 @@ window.addEventListener("DOMContentLoaded", () => {
           `
         <div>
           <input type="checkbox" id="${element}" />
-          <label for="machine-gun">${element}</label>
+          <label for="${element}">${element}</label>
         </div>
         `
         );
