@@ -97,6 +97,10 @@ window.addEventListener("DOMContentLoaded", () => {
   btn_upload.addEventListener("click", handleUpload, false);
 
   function handleUpload() {
+    // Set mission name and autor
+    name = document.getElementById("name").value;
+    author = document.getElementById("author").value;
+
     // Copy files to a temp folder
     fs.copySync(`${missionFile}\\`, `${__dirname}\\temp\\${missionFileName}`);
     fs.copySync(`${sdFolder}\\`, `${__dirname}\\temp\\SD\\${sdFolderName}`);
@@ -105,8 +109,45 @@ window.addEventListener("DOMContentLoaded", () => {
       `${__dirname}\\temp\\modloader\\${modloaderFolderName}`
     );
 
-    // Set mission name
-    name = document.getElementById("name").value;
+    // Write mission's INST.json
+    let json = {
+      name,
+      author,
+      missionFileName,
+      sdFolderName,
+      modloaderFolderName,
+    };
+    json = JSON.stringify(json);
+    fs.writeFileSync(`${__dirname}\\temp\\INST.json`, json);
+
+    // Write ReadMe.txt
+    fs.writeFileSync(
+      `${__dirname}\\temp\\README.txt`,
+      `
+======================================================
+### ${name.toUpperCase()}
+### By: ${author}
+======================================================
+
+### How to install it?
+
+If you have DYOM Installer, simply open the program and click on "Install a Mission" button. Select this file and click"Install". That's it, you can now run the game and start playing!
+
+If you do not have the installer in your computer, you can download it here: LINK
+
+Or, if you prefer, you can manually move the folders inside their respective places. These are:
+
+"modloader" folder goes to your GTA San Andreas root folder.
+"SD" folder goes to your GTA San Andreas User Files folder
+${missionFileName} also goes to your GTA San Andreas User Files folder.
+
+If you have any questions or issues head to our Discord server, we have an #support channel, you are very welcome there:
+https://discordapp.com/invite/XzqxyV7
+
+Have fun!!!
+;)
+`
+    );
 
     // create a file to stream archive data to.
     const output = fs.createWriteStream(`${__dirname}\\${name}.zip`);
