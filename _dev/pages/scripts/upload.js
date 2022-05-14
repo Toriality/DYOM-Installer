@@ -142,7 +142,6 @@ window.addEventListener("DOMContentLoaded", () => {
     // Get List of required add-ons
     // Query for only the checked checkboxes and put the result in an array
     try {
-      await setStatus(`Generating addons for ${name}...`);
       requiredAddons = document.querySelectorAll(
         "input[type='checkbox']:checked"
       );
@@ -152,7 +151,7 @@ window.addEventListener("DOMContentLoaded", () => {
       }
       requiredAddons = newArray;
     } catch (err) {
-      console.log("Got an error while  getting list of required addons", err);
+      console.log("Got an error while getting list of required addons", err);
     }
 
     // Copy files to a temp folder
@@ -165,22 +164,26 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     // SD folder
-    try {
-      await setStatus(`${sdFolderName} is a funny word...`);
-      fs.copySync(`${sdFolder}\\`, `${__dirname}\\temp\\SD\\${sdFolderName}`);
-    } catch (err) {
-      console.log("Got an error while copying SD folder", err);
+    if (sdFolder !== null) {
+      try {
+        await setStatus(`${sdFolderName} is a funny word...`);
+        fs.copySync(`${sdFolder}\\`, `${__dirname}\\temp\\SD\\${sdFolderName}`);
+      } catch (err) {
+        console.log("Got an error while copying SD folder", err);
+      }
     }
 
     // Modloader folder
-    try {
-      await setStatus(`Copying modloader folder...`);
-      fs.copySync(
-        `${modloaderFolder}\\`,
-        `${__dirname}\\temp\\modloader\\${modloaderFolderName}`
-      );
-    } catch (err) {
-      console.log("Got an error while copying modloader folder", err);
+    if (modloaderFolder !== null) {
+      try {
+        await setStatus(`Copying modloader folder...`);
+        fs.copySync(
+          `${modloaderFolder}\\`,
+          `${__dirname}\\temp\\modloader\\${modloaderFolderName}`
+        );
+      } catch (err) {
+        console.log("Got an error while copying modloader folder", err);
+      }
     }
 
     // Required addons folder
