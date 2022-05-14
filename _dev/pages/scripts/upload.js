@@ -134,7 +134,7 @@ window.addEventListener("DOMContentLoaded", () => {
     try {
       name = document.getElementById("name").value;
       author = document.getElementById("author").value;
-      await setStatus(`Making ${author} famous...`);
+      await setStatus("name-author");
     } catch (err) {
       console.log("Got an error while setting name and author", err);
     }
@@ -157,7 +157,7 @@ window.addEventListener("DOMContentLoaded", () => {
     // Copy files to a temp folder
     // DYOM.dat
     try {
-      await setStatus(`Copying ${missionFileName}...`);
+      await setStatus("mission");
       fs.copySync(`${missionFile}\\`, `${__dirname}\\temp\\${missionFileName}`);
     } catch (err) {
       console.log("Got an error while copying DYOM.dat file", err);
@@ -166,7 +166,7 @@ window.addEventListener("DOMContentLoaded", () => {
     // SD folder
     if (sdFolder !== null) {
       try {
-        await setStatus(`${sdFolderName} is a funny word...`);
+        await setStatus("sd");
         fs.copySync(`${sdFolder}\\`, `${__dirname}\\temp\\SD\\${sdFolderName}`);
       } catch (err) {
         console.log("Got an error while copying SD folder", err);
@@ -176,7 +176,7 @@ window.addEventListener("DOMContentLoaded", () => {
     // Modloader folder
     if (modloaderFolder !== null) {
       try {
-        await setStatus(`Copying modloader folder...`);
+        await setStatus("modloader");
         fs.copySync(
           `${modloaderFolder}\\`,
           `${__dirname}\\temp\\modloader\\${modloaderFolderName}`
@@ -196,7 +196,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (requiredAddons.includes("MachineGun")) {
           try {
-            await setStatus(`Put sentry here...`);
+            await setStatus("MachineGun");
             fs.copySync(
               `${instDir}\\modloader\\Machine Gun`,
               `${__dirname}\\temp\\modloader\\Machine Gun`
@@ -208,7 +208,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (requiredAddons.includes("DarkEffect")) {
           try {
-            await setStatus(`Why is it so dark here...`);
+            await setStatus("DarkEfect");
             fs.copySync(
               `${instDir}\\modloader\\Darkness Effect`,
               `${__dirname}\\temp\\modloader\\Darkness Effect`
@@ -220,9 +220,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (requiredAddons.includes("WDynamites")) {
           try {
-            await setStatus(
-              `Moving 'Working Dynamites', uh, that's a bit dangerous...`
-            );
+            await setStatus("WDynamites");
             fs.copySync(
               `${instDir}\\modloader\\Working Dynamites`,
               `${__dirname}\\temp\\modloader\\Working Dynamites`
@@ -234,7 +232,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (requiredAddons.includes("RoadSpikes")) {
           try {
-            await setStatus(`Putting spikes on the raod...`);
+            await setStatus("RoadSpikes");
             fs.copySync(
               `${instDir}\\modloader\\Road Spikes`,
               `${__dirname}\\temp\\modloader\\Road Spikes`
@@ -246,7 +244,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (requiredAddons.includes("TeleportHealth")) {
           try {
-            await setStatus(`Why making hard missions? You're not M316...`);
+            await setStatus("TeleportHealth");
             fs.copySync(
               `${instDir}\\modloader\\Disable TP health regen`,
               `${__dirname}\\temp\\modloader\\Disable TP health regen`
@@ -258,7 +256,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (requiredAddons.includes("CCTV")) {
           try {
-            await setStatus(`I'm always watching, or listening, or both...`);
+            await setStatus("CCTV");
             fs.copySync(
               `${instDir}\\modloader\\CCTV Camera`,
               `${__dirname}\\temp\\modloader\\CCTV Camera`
@@ -270,7 +268,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (requiredAddons.includes("PhoneAnim")) {
           try {
-            await setStatus("Searching for the best ringtones...");
+            await setStatus("PhoneAnim");
             fs.copySync(
               `${instDir}\\modloader\\Phone animation`,
               `${__dirname}\\temp\\modloader\\Phone animation`
@@ -282,7 +280,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (requiredAddons.includes("WeaponShops")) {
           try {
-            await setStatus(`Buying some weapons at Ammu-Nation...`);
+            await setStatus("WeaponShops");
             fs.copySync(
               `${instDir}\\modloader\\Weapon Shops`,
               `${__dirname}\\temp\\modloader\\Weapon Shops`
@@ -294,7 +292,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (requiredAddons.includes("SAMP")) {
           try {
-            await setStatus(`Creating SAMP objects...`);
+            await setStatus("SAMP");
             fs.copySync(
               `${instDir}\\modloader\\SAMP Objects`,
               `${__dirname}\\temp\\modloader\\SAMP Objects`
@@ -312,7 +310,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // Write mission's INST.json
     try {
-      await setStatus(`Creating installation data...`);
+      await setStatus("installation-data");
       let json = {
         name,
         author,
@@ -329,7 +327,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // Write ReadMe.txt
     try {
-      await setStatus("Writing README.txt for manual installations...");
+      await setStatus("readme");
       fs.writeFileSync(
         `${__dirname}\\temp\\README.txt`,
         `
@@ -363,7 +361,7 @@ Have fun!!!
 
     // create a file to stream archive data to.
     try {
-      await setStatus(`Creating package ${name}.zip...`);
+      await setStatus("package");
       const output = fs.createWriteStream(`${__dirname}\\${name}.zip`);
       const archive = archiver("zip", {
         zlib: { level: 0 }, // Sets the compression level.
@@ -401,7 +399,7 @@ Have fun!!!
 
       // pipe archive data to the file
       try {
-        await setStatus(`Processing data...`);
+        await setStatus("processing");
         archive.pipe(output);
       } catch (err) {
         console.log(err);
@@ -409,7 +407,7 @@ Have fun!!!
 
       // Archive files and folders
       try {
-        await setStatus(`It is almost done...`);
+        await setStatus("almost-done");
         archive.directory(`${__dirname}\\temp\\`, false);
       } catch (err) {
         console.log(err);
@@ -418,7 +416,7 @@ Have fun!!!
       // finalize the archive (ie we are done appending files but streams have to finish yet)
       // 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
       archive.finalize().then(() => {
-        setStatus(`Done! Removing temp folder...`);
+        setStatus("temp");
         fs.removeSync(`${__dirname}\\temp\\`);
         document.getElementById("overlay").remove();
       });
@@ -431,10 +429,25 @@ Have fun!!!
   // Setters
   //---------------------------------
 
-  async function setStatus(str) {
-    // Loading messages
-    document.getElementById("status").innerText = str;
-    console.log(str);
+  async function setStatus(type) {
+    // Loading titles
+    const status = buildStatus();
+    const randomNumber = Math.random();
+    let received = [];
+    for (var i = 0; i < status.length; i++) {
+      if (status[i].type === type) {
+        for (var x = 0; x < status[i].data.length; x++) {
+          var entry = status[i].data[x];
+          if (randomNumber < entry.probability) {
+            var stringsLength = entry.strings.length;
+            var chosenString = Math.floor(Math.random() * stringsLength);
+            received.push(entry.strings[chosenString]);
+          }
+        }
+      }
+    }
+    const displayString = received[received.length - 1];
+    document.getElementById("status").innerText = displayString;
     await randomTimeout();
   }
 
@@ -479,5 +492,240 @@ Have fun!!!
     // Returns a random integer from 600 to 3000:
     const randomMs = Math.floor(Math.random() * 3000) + 600;
     return new Promise((resolve) => setTimeout(resolve, randomMs));
+  }
+
+  function buildStatus() {
+    const status = [
+      {
+        type: "name-author",
+        data: [
+          {
+            probability: 1,
+            strings: [`Making ${author} famous...`],
+          },
+          {
+            probability: 0.1,
+            strings: [`Making ${name} the next MOTW winner...`],
+          },
+        ],
+      },
+      {
+        type: "mission",
+        data: [
+          {
+            probability: 1,
+            strings: [`Copying ${missionFileName}...`],
+          },
+          {
+            probability: 0.2,
+            strings: [
+              `Nice work! This mission is cool...`,
+              `This mission is not bad...`,
+            ],
+          },
+        ],
+      },
+      {
+        type: "sd",
+        data: [
+          {
+            probability: 1,
+            strings: [`${sdFolderName} is a funny word...`],
+          },
+        ],
+      },
+      {
+        type: "modloader",
+        data: [
+          {
+            probability: 1,
+            strings: ["Copying modloader folder..."],
+          },
+        ],
+      },
+      {
+        type: "MachineGun",
+        data: [
+          {
+            probability: 1,
+            strings: [`Copying addon 'MachineGun'...`],
+          },
+          {
+            probability: 0.2,
+            strings: [
+              `Put sentry here...`,
+              `Buying ammo for minigun on eBay...`,
+              `Robbing Uncle Sam...`,
+              `Uh... a man with a lot of guns? Shit, I give up!...`,
+            ],
+          },
+        ],
+      },
+      {
+        type: "DarkEfect",
+        data: [
+          {
+            probability: 1,
+            strings: [`Copying addon 'DarkEffect'...`],
+          },
+          {
+            probability: 0.2,
+            strings: [
+              `Who turned off the lights?...`,
+              `Why is your missions so dark?...`,
+              `I have a confesisonto make. I'm blind...`,
+            ],
+          },
+        ],
+      },
+      {
+        type: "WDynamites",
+        data: [
+          {
+            probability: 1,
+            strings: [`Copying 'WDynamites'...`],
+          },
+          {
+            probability: 0.1,
+            strings: [
+              `Moving 'Working Dynamites', uh, this seems dangerous...`,
+            ],
+          },
+        ],
+      },
+      {
+        type: "RoadSpikes",
+        data: [
+          {
+            probability: 1,
+            strings: [`Copying 'RoadSpikes'...`],
+          },
+          {
+            probability: 0.1,
+            strings: [`Throwing spikes on the road...`],
+          },
+        ],
+      },
+      {
+        type: "TeleportHealth",
+        data: [
+          {
+            probability: 1,
+            strings: [`Copying 'TeleportHealth'...`],
+          },
+          {
+            probability: 0.01,
+            strings: [`Why making hard missions? You're not M316...`],
+          },
+        ],
+      },
+      {
+        type: "CCTV",
+        data: [
+          {
+            probability: 1,
+            strings: [`Copying 'CCTV'...`],
+          },
+          {
+            probability: 0.1,
+            strings: [`I'm always watching, or listening, or both...`],
+          },
+        ],
+      },
+      {
+        type: "PhoneAnim",
+        data: [
+          {
+            probability: 1,
+            strings: [`Copying 'PhoneAnim'...`],
+          },
+          {
+            probability: 0.2,
+            strings: [
+              `Ring, ring, ring, ring, ring. Banana phone...`,
+              `Searching for the best ringtones on Napster...`,
+            ],
+          },
+        ],
+      },
+      {
+        type: "WeaponShops",
+        data: [
+          {
+            probability: 1,
+            strings: [`Copying 'WeaponShops'...`],
+          },
+          {
+            probability: 0.1,
+            strings: [`Buying weapons on Ammu-Nation...`],
+          },
+        ],
+      },
+      {
+        type: "SAMP",
+        data: [
+          {
+            probability: 1,
+            strings: [`Copying SAMP objects...`],
+          },
+        ],
+      },
+      {
+        type: "installation-data",
+        data: [
+          {
+            probability: 1,
+            strings: [`Creating installation data...`],
+          },
+        ],
+      },
+      {
+        type: "readme",
+        data: [
+          {
+            probability: 1,
+            strings: [`Writing README.txt for manual installations...`],
+          },
+        ],
+      },
+      {
+        type: "package",
+        data: [
+          {
+            probability: 1,
+            strings: [`Creating ${name}.zip`],
+          },
+        ],
+      },
+      {
+        type: "processing",
+        data: [
+          {
+            probability: 1,
+            strings: [`Processing data...`],
+          },
+        ],
+      },
+      {
+        type: "almost-done",
+        data: [
+          {
+            probability: 1,
+            strings: [`It's almost done...`],
+          },
+        ],
+      },
+      {
+        type: "temp",
+        data: [
+          {
+            probability: 1,
+            strings: [`Done! Removing temp folder...`],
+          },
+        ],
+      },
+    ];
+
+    return status;
   }
 });
