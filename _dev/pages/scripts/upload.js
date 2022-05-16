@@ -572,7 +572,7 @@ Have fun!!!
             probability: 0.2,
             strings: [
               `Who turned off the lights?...`,
-              `Why is your missions so dark?...`,
+              `Why are your missions so dark?...`,
               `I have a confesisonto make. I'm blind...`,
             ],
           },
