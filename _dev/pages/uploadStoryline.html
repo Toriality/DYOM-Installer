@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <link rel="stylesheet" href=".\styles\styles.css" />
+    <link rel="stylesheet" href=".\styles\forms.css" />
+    <title>Upload a Storyline</title>
+  </head>
+  <body>
+    <form>
+      <div id="frm-main">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required />
+        <label for="author">Author:</label>
+        <input type="text" id="author" required />
+      </div>
+
+      <div id="frm-dsl">
+        <label for="dsl">
+          <input id="dsl" type="file" webkitdirectory directory multiple />
+          <p>Select DSL folder</p>
+          <select id="sel-dsl" multiple></select>
+        </label>
+      </div>
+
+      <div id="frm-2">
+        <div>
+          <p>List of SD folders names</p>
+          <div style="width: 100%">
+            <label for="sd1">SD 1</label>
+            <input id="sd1" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd2">SD 2</label>
+            <input id="sd2" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd3">SD 3</label>
+            <input id="sd3" type="text" style="width: 8ch" maxlength="5" />
+          </div>
+          <div style="width: 100%">
+            <label for="sd4">SD 4</label>
+            <input id="sd4" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd5">SD 5</label>
+            <input id="sd5" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd6">SD 6</label>
+            <input id="sd6" type="text" style="width: 8ch" maxlength="5" />
+          </div>
+          <div style="width: 100%">
+            <label for="sd7">SD 7</label>
+            <input id="sd7" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd8">SD 8</label>
+            <input id="sd8" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd9">SD 9</label>
+            <input id="sd9" type="text" style="width: 8ch" maxlength="5" />
+          </div>
+          <div style="width: 100%">
+            <label for="sd10">SD 10</label>
+            <input id="sd10" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd11">SD 11</label>
+            <input id="sd11" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd12">SD 12</label>
+            <input id="sd12" type="text" style="width: 8ch" maxlength="5" />
+          </div>
+          <div style="width: 100%">
+            <label for="sd13">SD 13</label>
+            <input id="sd13" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd14">SD 14</label>
+            <input id="sd14" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd15">SD 15</label>
+            <input id="sd15" type="text" style="width: 8ch" maxlength="5" />
+          </div>
+          <div style="width: 100%">
+            <label for="sd16">SD 16</label>
+            <input id="sd16" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd17">SD 17</label>
+            <input id="sd17" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd18">SD 18</label>
+            <input id="sd18" type="text" style="width: 8ch" maxlength="5" />
+          </div>
+          <div style="width: 100%">
+            <label for="sd19">SD 19</label>
+            <input id="sd19" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd20">SD 20</label>
+            <input id="sd20" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd21">SD 21</label>
+            <input id="sd21" type="text" style="width: 8ch" maxlength="5" />
+          </div>
+          <div style="width: 100%">
+            <label for="sd22">SD 22</label>
+            <input id="sd22" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd23">SD 23</label>
+            <input id="sd23" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd24">SD 24</label>
+            <input id="sd24" type="text" style="width: 8ch" maxlength="5" />
+          </div>
+          <div style="width: 100%">
+            <label for="sd25">SD 25</label>
+            <input id="sd25" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd26">SD 26</label>
+            <input id="sd26" type="text" style="width: 8ch" maxlength="5" />
+          </div>
+        </div>
+        <div>
+          <label for="mods">
+            <input id="mods" type="file" webkitdirectory directory multiple />
+            <p>Select modloader folder</p>
+            <select id="sel-mods" multiple></select>
+          </label>
+        </div>
+      </div>
+
+      <div id="addons">
+        <p>Required add-ons:</p>
+        <div id="required-addons"></div>
+      </div>
+      <button id="btn-upload" type="button">Create mission</button>
+    </form>
+
+    <script type="module" src=".\scripts\uploadStoryline.js"></script>
+  </body>
+</html>

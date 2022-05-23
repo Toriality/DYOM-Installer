@@ -31,6 +31,13 @@ label[for="author"] {
 #frm-mission select {
   max-height: 2.5rem;
 }
+#frm-mission-pack {
+  margin-bottom: 18px;
+}
+#frm-mission-pack select {
+  min-height: 4rem;
+  max-height: 4rem;
+}
 
 #frm-2 {
   display: flex;
@@ -41,9 +48,6 @@ label[for="author"] {
 }
 #frm-2 div {
   width: 100%;
-}
-#frm-2 div:last-child {
-  margin-left: 15px;
 }
 
 label p {

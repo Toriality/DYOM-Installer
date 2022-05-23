@@ -4,32 +4,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const btn_upload = document.getElementById("btn-upload");
   btn_upload.addEventListener("click", showUploadModal, false);
   function showUploadModal() {
-    document.querySelector("body").insertAdjacentHTML(
-      "beforeend",
-      `
-            <div id="overlay">
-                <div id="modal-wrapper">
-                <div id="modal-desc">
-                    <p>Select one of the options bellow:</p>
-                </div>
-            <div id="modal">
-                <div id="single-mission" class="modal-selection">
-                    <i class="fa-solid fa-cube"></i>               
-                    <span>Single mission</span>
-                </div>
-                <div id="storyline" class="modal-selection">
-                    <i class="fa-solid fa-book"></i>
-                    <span>Storyline</span>
-                </div>
-                <div id="mission-pack" class="modal-selection">
-                    <i class="fa-solid fa-cubes"></i>
-                    <span>Mission Pack</span>
-                </div>
-            </div>
-            </div>
-            </div>
-        `
-    );
+    document.getElementById("overlay").removeAttribute("style");
     isModalOpen = true;
     if (isModalOpen) {
       modalFunctions();
@@ -73,7 +48,9 @@ window.addEventListener("DOMContentLoaded", () => {
       .addEventListener("click", closeOverlay, false);
 
     function closeOverlay() {
-      document.getElementById("overlay").remove();
+      document
+        .getElementById("overlay")
+        .setAttribute("style", "visibility:hidden");
     }
 
     function changeDesc(str, id = "") {

@@ -7,11 +7,23 @@ window.addEventListener("DOMContentLoaded", () => {
     ipcRenderer.send("btn-install");
   }
 
-  // const btn_upload = document.getElementById("btn-upload");
-  // btn_upload.addEventListener("click", upload);
-  // function upload(e) {
-  //   ipcRenderer.send("btn-upload");
-  // }
+  const single_mission = document.getElementById("single-mission");
+  single_mission.addEventListener("click", uploadMission);
+  function uploadMission(e) {
+    ipcRenderer.send("single-mission");
+  }
+
+  const mission_pack = document.getElementById("mission-pack");
+  mission_pack.addEventListener("click", uploadMP, false);
+  function uploadMP() {
+    ipcRenderer.send("mission-pack");
+  }
+
+  const storyline = document.getElementById("storyline");
+  storyline.addEventListener("click", uploadStoryline, false);
+  function uploadStoryline() {
+    ipcRenderer.send("storyline");
+  }
 
   const btn_exit = document.getElementById("btn-exit");
   btn_exit.addEventListener("click", exit);

@@ -43,19 +43,20 @@ app.whenReady().then(() => {
 
 ipcMain.on("btn-install", () => {
   installWindow = new BrowserWindow({
-    width: mainWindow.width,
-    height: mainWindow.height,
+    width: 500,
+    height: 200,
     webPreferences: {
       enableRemoteModule: true,
       nodeIntegration: true,
+      contextIsolation: false,
     },
-    resizable: false,
+    resizable: true,
     icon: icon,
   });
   installWindow.loadFile("./pages/install.html");
 });
 
-ipcMain.on("btn-upload", () => {
+ipcMain.on("single-mission", () => {
   uploadWindow = new BrowserWindow({
     width: mainWindow.width,
     height: mainWindow.height,
@@ -67,7 +68,37 @@ ipcMain.on("btn-upload", () => {
     resizable: false,
     icon: icon,
   });
-  uploadWindow.loadFile("./pages/upload.html");
+  uploadWindow.loadFile("./pages/uploadMission.html");
+});
+
+ipcMain.on("mission-pack", () => {
+  uploadWindow = new BrowserWindow({
+    width: mainWindow.width,
+    height: mainWindow.height,
+    webPreferences: {
+      enableRemoteModule: true,
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+    resizable: false,
+    icon: icon,
+  });
+  uploadWindow.loadFile("./pages/uploadMP.html");
+});
+
+ipcMain.on("storyline", () => {
+  uploadWindow = new BrowserWindow({
+    width: mainWindow.width,
+    height: mainWindow.height,
+    webPreferences: {
+      enableRemoteModule: true,
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+    resizable: false,
+    icon: icon,
+  });
+  uploadWindow.loadFile("./pages/uploadStoryline.html");
 });
 
 ipcMain.on("btn-exit", () => {
