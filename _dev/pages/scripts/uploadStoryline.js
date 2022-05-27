@@ -303,6 +303,7 @@ window.addEventListener("DOMContentLoaded", () => {
     try {
       await setStatus("installation-data");
       let json = {
+        type: "dsl",
         name,
         author,
         dslFolder,

@@ -311,6 +311,7 @@ window.addEventListener("DOMContentLoaded", () => {
     try {
       await setStatus("installation-data");
       let json = {
+        type: "mp",
         name,
         author,
         missionFilesArray,

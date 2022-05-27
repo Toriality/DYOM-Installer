@@ -63,14 +63,14 @@ button::selection #logo {
   width: 100%;
 }
 
-#mission-delete-btn {
+#btn-delete {
   display: block;
   margin-right: 0;
   margin-left: auto;
   background-color: #ff4444;
   color: white;
 }
-#mission-delete-btn:hover {
+#btn-delete:hover {
   background-color: red;
 }
 

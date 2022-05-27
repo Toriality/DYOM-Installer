@@ -1,5 +1,6 @@
 const fs = require("fs-extra");
 const decompress = require("decompress");
+const { ipcRenderer } = require("electron");
 
 let location = null;
 
@@ -27,72 +28,327 @@ function handleInstall() {
 }
 
 function install() {
-  decompress(location, __dirname + "\\temp\\").then((files) => {
-    readJSONFiles();
-    // Copy files
-    if (missionJSON.type === "mission") {
-      try {
-        fs.copySync(
-          `${__dirname}\\temp\\${missionJSON.missionFileName}`,
-          `${userJSON.instDir}\\${missionJSON.missionFileName}`
-        );
-      } catch (err) {
-        console.log(err);
-      }
-      if (missionJSON.sdFolderName !== null) {
-        fs.copySync(
-          `${__dirname}\\temp\\SD\\${missionJSON.sdFolderName}`,
-          `${userJSON.instDir}\\SD\\${missionJSON.sdFolderName}`
-        );
-      }
-      if (missionJSON.modloaderFolderName !== null) {
-        fs.copySync(
-          `${__dirname}\\temp\\modloader\\${missionJSON.modloaderFolderName}`,
-          `${userJSON.instDir2}\\modloader\\${missionJSON.modloaderFolderName}`
-        );
-      }
-      if (missionJSON.requiredAddons.length > 0) {
-        let folder = null;
-        for (var i = 0; i < missionJSON.requiredAddons.length; i++) {
-          switch (missionJSON.requiredAddons[i]) {
-            case "MachineGun":
-              folder = "Machine Gun";
-              break;
-            case "DarkEffect":
-              folder = "Darkness Effect";
-              break;
-            case "WDynamites":
-              folder = "Working Dynamites";
-              break;
-            case "RoadSpikes":
-              folder = "Road Spikes";
-              break;
-            case "TeleportHealth":
-              folder = "Disable TP health regen";
-              break;
-            case "CCTV":
-              folder = "CCTV Camera";
-              break;
-            case "PhoneAnim":
-              folder = "Phone animation";
-              break;
-            case "WeaponShops":
-              folder = "Weapon Shops";
-              break;
-            case "SAMP":
-              folder = "SAMP Objects";
-              break;
-            default:
-              break;
+  document.querySelector("body").style.cursor = "wait";
+  document.getElementById("btn-install").setAttribute("disabled", "true");
+  decompress(location, __dirname + "\\temp\\")
+    .then((files) => {
+      let result = null;
+      let shouldRemove = false;
+      let shouldRemoveMP = false;
+      readJSONFiles();
+
+      // Copy files
+      if (missionJSON.type === "dsl") {
+        if (userJSON.dsl !== undefined) {
+          result = ipcRenderer.sendSync("dsl-exists", userJSON.dsl.name);
+        } else {
+          result = 0;
+        }
+        if (result === 0) {
+          try {
+            fs.removeSync(`${userJSON.instDir}\\DSL\\`);
+            fs.copySync(
+              `${__dirname}\\temp\\DSL\\`,
+              `${userJSON.instDir}\\DSL\\`
+            );
+          } catch (err) {
+            console.log(err);
           }
-          fs.copySync(
-            `${__dirname}\\temp\\modloader\\${folder}`,
-            `${userJSON.instDir2}\\modloader\\${folder}`
-          );
+          try {
+            if (userJSON.dsl.sdFoldersArray.length > 0) {
+              for (var i = 0; i < userJSON.dsl.sdFoldersArray.length; i++) {
+                fs.removeSync(
+                  `${userJSON.instDir}\\SD\\${userJSON.dsl.sdFoldersArray[i]}`
+                );
+              }
+            }
+          } catch (err) {
+            console.log(err);
+          }
+          if (missionJSON.sdFoldersArray.length > 0) {
+            for (var i = 0; i < missionJSON.sdFoldersArray.length; i++) {
+              fs.copySync(
+                `${__dirname}\\temp\\SD\\${missionJSON.sdFoldersArray[i]}`,
+                `${userJSON.instDir}\\SD\\${missionJSON.sdFoldersArray[i]}`
+              );
+            }
+          }
+          try {
+            if (userJSON.dsl.modloaderFolderName !== null) {
+              fs.removeSync(
+                `${userJSON.instDir2}\\modloader\\${userJSON.dsl.modloaderFolderName}`
+              );
+            }
+          } catch (err) {
+            console.log(err);
+          }
+          if (missionJSON.modloaderFolderName !== null) {
+            fs.copySync(
+              `${__dirname}\\temp\\modloader\\${missionJSON.modloaderFolderName}`,
+              `${userJSON.instDir2}\\modloader\\${missionJSON.modloaderFolderName}`
+            );
+          }
+          if (missionJSON.requiredAddons.length > 0) {
+            copyRequiredAddons(missionJSON);
+          }
+          try {
+            (userJSON.dsl = {
+              name: missionJSON.name,
+              author: missionJSON.author,
+              sdFoldersArray: missionJSON.sdFoldersArray,
+              modloaderFolderName: missionJSON.modloaderFolderName,
+              requiredAddons: missionJSON.requiredAddons,
+            }),
+              fs.writeJsonSync("./INST.json", userJSON);
+          } catch (err) {
+            console.log(err);
+          }
+        }
+        if (result === 1) return;
+      }
+
+      if (missionJSON.type === "mp") {
+        let continueInstall = ipcRenderer.sendSync("mp-warning");
+        if (continueInstall === 1) return;
+        if (userJSON.mp !== undefined) {
+          result = ipcRenderer.sendSync("mp-exists", userJSON.mp.name);
+          shouldRemove = true;
+        } else {
+          result = 0;
+        }
+        if (result === 0) {
+          // Remove all DYOM missions and its data
+          try {
+            for (var i = 0; i < userJSON.missions.length; i++) {
+              fs.removeSync(
+                `${userJSON.instDir}\\${userJSON.missions[i].missionFileName}`
+              );
+              fs.removeSync(
+                `${userJSON.instDir}\\SD\\${userJSON.missions[i].sdFolderName}`
+              );
+              fs.removeSync(
+                `${userJSON.instDir2}\\modloader\\${userJSON.missions[i].modloaderFolderName}`
+              );
+              userJSON.missions[i] = { slot: i + 1 };
+            }
+          } catch (err) {
+            console.log(err);
+          }
+
+          if (shouldRemove) {
+            // Remove DYOM missions
+            try {
+              for (i = 0; i < userJSON.mp.missionFilesArray.length; i++) {
+                fs.removeSync(
+                  `${userJSON.instDir}\\${userJSON.mp.missionFilesArray[i]}`
+                );
+              }
+            } catch (err) {
+              console.log(err);
+            }
+            // Remove SD folders
+            try {
+              for (i = 0; i < userJSON.mp.sdFoldersArray.length; i++) {
+                fs.removeSync(
+                  `${userJSON.instDir}\\SD\\${userJSON.mp.sdFoldersArray[i]}`
+                );
+              }
+            } catch (err) {
+              console.log(err);
+            }
+            // Remove modloader folders
+            try {
+              fs.removeSync(
+                `${userJSON.instDir2}\\modloader\\${userJSON.mp.modloaderFolderName}`
+              );
+            } catch (err) {
+              console.log(err);
+            }
+          }
+          if (missionJSON.missionFilesArray.length > 0) {
+            for (var i = 0; i < missionJSON.missionFilesArray.length; i++) {
+              fs.copySync(
+                `${__dirname}\\temp\\${missionJSON.missionFilesArray[i]}`,
+                `${userJSON.instDir}\\${missionJSON.missionFilesArray[i]}`
+              );
+            }
+          }
+          if (missionJSON.sdFoldersArray.length > 0) {
+            for (var i = 0; i < missionJSON.sdFoldersArray.length; i++) {
+              fs.copySync(
+                `${__dirname}\\temp\\SD\\${missionJSON.sdFoldersArray[i]}`,
+                `${userJSON.instDir}\\SD\\${missionJSON.sdFoldersArray[i]}`
+              );
+            }
+          }
+          if (missionJSON.modloaderFolderName !== null) {
+            fs.copySync(
+              `${__dirname}\\temp\\modloader\\${missionJSON.modloaderFolderName}`,
+              `${userJSON.instDir2}\\modloader\\${missionJSON.modloaderFolderName}`
+            );
+          }
+          if (missionJSON.requiredAddons.length > 0) {
+            copyRequiredAddons(missionJSON);
+          }
+          try {
+            (userJSON.mp = {
+              name: missionJSON.name,
+              author: missionJSON.author,
+              missionFilesArray: missionJSON.missionFilesArray,
+              sdFoldersArray: missionJSON.sdFoldersArray,
+              modloaderFolderName: missionJSON.modloaderFolderName,
+              requiredAddons: missionJSON.requiredAddons,
+            }),
+              fs.writeJsonSync("./INST.json", userJSON);
+          } catch (err) {
+            console.log(err);
+          }
         }
       }
-    }
-  });
+      if (result === 1) return;
+
+      if (missionJSON.type === "mission") {
+        let slot = ipcRenderer.sendSync("slot"); // 0 - 7 (8 slots)
+        if (userJSON.missions[slot].name !== undefined) {
+          result = ipcRenderer.sendSync(
+            "mission-exists",
+            userJSON.missions[slot].name
+          );
+          shouldRemove = true;
+        } else {
+          result = 0;
+        }
+        if (userJSON.mp !== undefined) {
+          result = ipcRenderer.sendSync("mp-exists", userJSON.mp.name);
+          shouldRemoveMP = true;
+        }
+
+        if (result === 0) {
+          let DYOM = `DYOM${slot + 1}.dat`;
+
+          if (shouldRemoveMP) {
+            // Remove MP and all its data
+            // DYOM.dat files
+            try {
+              for (i = 0; i < userJSON.mp.missionFilesArray.length; i++) {
+                fs.removeSync(
+                  `${userJSON.instDir}\\${userJSON.mp.missionFilesArray[i]}`
+                );
+              }
+            } catch (err) {
+              console.log(err);
+            }
+            // Remove SD folders
+            try {
+              for (i = 0; i < userJSON.mp.sdFoldersArray.length; i++) {
+                fs.removeSync(
+                  `${userJSON.instDir}\\SD\\${userJSON.mp.sdFoldersArray[i]}`
+                );
+              }
+            } catch (err) {
+              console.log(err);
+            }
+            // Remove modloader folders
+            try {
+              fs.removeSync(
+                `${userJSON.instDir2}\\modloader\\${userJSON.mp.modloaderFolderName}`
+              );
+            } catch (err) {
+              console.log(err);
+            }
+            // Remove mp in user json
+            try {
+              userJSON.mp = undefined;
+            } catch (err) {
+              console.log(err);
+            }
+          }
+
+          if (shouldRemove) {
+            // Remove DYOM mission slot
+            try {
+              fs.removeSync(`${userJSON.instDir}\\${DYOM}`);
+            } catch (err) {
+              console.log(err);
+            }
+            // Remove SD folder
+            try {
+              fs.removeSync(
+                `${userJSON.instDir}\\SD\\${userJSON.missions[slot].sdFolderName}`
+              );
+            } catch (err) {
+              console.log(err);
+            }
+            // Remove modloader folder
+            try {
+              fs.removeSync(
+                `${userJSON.instDir2}\\modloader\\${userJSON.missions[slot].modloaderFolderName}`
+              );
+            } catch (err) {
+              console.log(err);
+            }
+          }
+
+          // Rename to correct DYOM mission slot .dat
+          // and copy file
+          try {
+            fs.renameSync(
+              `${__dirname}\\temp\\${missionJSON.missionFileName}`,
+              `${__dirname}\\temp\\${DYOM}`
+            );
+            fs.copySync(
+              `${__dirname}\\temp\\${DYOM}`,
+              `${userJSON.instDir}\\${DYOM}`
+            );
+          } catch (err) {
+            console.log(err);
+          }
+
+          // Copy SD folder
+          if (missionJSON.sdFolderName !== null) {
+            fs.copySync(
+              `${__dirname}\\temp\\SD\\${missionJSON.sdFolderName}`,
+              `${userJSON.instDir}\\SD\\${missionJSON.sdFolderName}`
+            );
+          }
+
+          // Copy modloader folder
+          if (missionJSON.modloaderFolderName !== null) {
+            fs.copySync(
+              `${__dirname}\\temp\\modloader\\${missionJSON.modloaderFolderName}`,
+              `${userJSON.instDir2}\\modloader\\${missionJSON.modloaderFolderName}`
+            );
+          }
+
+          // Copy required addons
+          if (missionJSON.requiredAddons.length > 0) {
+            copyRequiredAddons(missionJSON);
+          }
+
+          // Update user json
+          try {
+            (userJSON.missions[slot] = {
+              slot: slot + 1,
+              name: missionJSON.name,
+              author: missionJSON.author,
+              missionFileName: DYOM,
+              sdFolderName: missionJSON.sdFolderName,
+              modloaderFolderName: missionJSON.modloaderFolderName,
+              requiredAddons: missionJSON.requiredAddons,
+            }),
+              fs.writeJsonSync("./INST.json", userJSON);
+          } catch (err) {
+            console.log(err);
+          }
+        }
+        if (result === 1) return;
+      }
+    })
+    .then(() => {
+      fs.removeSync(__dirname + "\\temp\\");
+      document.getElementById("btn-install").removeAttribute("disabled");
+      document.querySelector("body").style.cursor = "auto";
+    });
 }
 
 function readJSONFiles() {
@@ -100,9 +356,48 @@ function readJSONFiles() {
   missionJSON = JSON.parse(
     fs.readFileSync(__dirname + "/temp/INST.json", "utf-8")
   );
-  console.log(missionJSON);
 
   // Read user's json
   userJSON = JSON.parse(fs.readFileSync("./INST.json", "utf-8"));
-  console.log(userJSON);
+}
+
+function copyRequiredAddons(json) {
+  let folder = null;
+  for (var i = 0; i < json.requiredAddons.length; i++) {
+    switch (json.requiredAddons[i]) {
+      case "MachineGun":
+        folder = "Machine Gun";
+        break;
+      case "DarkEffect":
+        folder = "Darkness Effect";
+        break;
+      case "WDynamites":
+        folder = "Working Dynamites";
+        break;
+      case "RoadSpikes":
+        folder = "Road Spikes";
+        break;
+      case "TeleportHealth":
+        folder = "Disable TP health regen";
+        break;
+      case "CCTV":
+        folder = "CCTV Camera";
+        break;
+      case "PhoneAnim":
+        folder = "Phone animation";
+        break;
+      case "WeaponShops":
+        folder = "Weapon Shops";
+        break;
+      case "SAMP":
+        folder = "SAMP Objects";
+        break;
+      default:
+        break;
+    }
+    fs.copySync(
+      `${__dirname}\\temp\\modloader\\${folder}`,
+      `${userJSON.instDir2}\\modloader\\${folder}`
+    );
+  }
 }
