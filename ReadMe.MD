@@ -18,9 +18,9 @@ You can now install or upload missions, mission packs and storylines with a sing
 
 After the installation, we generate an DYOM.exe file with tools that helps you managing your DYOM files just by clicking a few buttons.
 
-Want to upload a mission or storyline? Enter the data, choose the mods you used, and click in "Create" to generate a .rar file ready to be installed by anyone.
+Want to upload a mission or storyline? Enter the data, choose the mods you used, and click in "Create" to generate a .zip file ready to be installed by anyone.
 
-Want to install a mission or storyline you just downloaded from the site? Click in "Install a mission" and select the .rar file, and that's all, **_everything is installed automatically for you!_**
+Want to install a mission or storyline you just downloaded from the site? Click in "Install a mission" and select the .zip file, and that's all, **_everything is installed automatically for you!_**
 
 ## Features
 
@@ -37,8 +37,8 @@ Want to install a mission or storyline you just downloaded from the site? Click 
 ### DYOM.exe
 
 - New DYOM.exe with tools for improving user experience
-- Quickly install missions, MPs and storylines by selecting the .rar file
-- Automatically generate a .rar file for your missions, MPs and storylines that can be shared with both users that has the installer and those who don't
+- Quickly install missions, MPs and storylines by selecting the .zip file
+- Automatically generate a .zip file for your missions, MPs and storylines that can be shared with both users that has the installer and those who don't
 - Delete the missions and all it's data with just one click
 
 ## List of add-ons

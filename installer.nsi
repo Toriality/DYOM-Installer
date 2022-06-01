@@ -89,7 +89,7 @@ SectionGroup "DYOM 8.1" DYOM
 	Section "DYOM Required Files" DYOM_Files
 		SectionIn 1
 		SetOutPath "$INSTDIR"
-		;File /r ".\_DYOM_FILES\"
+		File /r ".\_DYOM_FILES\"
 		SectionEnd
 
 	Section "DYOM Dependencies" DYOM_Dependencies
@@ -101,18 +101,18 @@ SectionGroup "DYOM 8.1" DYOM
 		StrCmp $IS_STEAM_GTASA "True" StartDelete SkipDelete
 		StartDelete:
 			Delete "$INSTDIR2\gta-sa.exe"
-			;File /r ".\_DYOM_DEPENDENCIES\"
+			File /r ".\_DYOM_DEPENDENCIES\"
 			Rename "$INSTDIR2\GTA_SA.exe" "$INSTDIR2\gta-sa.exe"
 			Goto +3
 		SkipDelete:
-		;File /r ".\_DYOM_DEPENDENCIES\"
+		File /r ".\_DYOM_DEPENDENCIES\"
 		SectionEnd
 SectionGroupEnd
 
 SectionGroup "SIZZZ's Addons" SIZZZ
 	Section "DYOM#" DYOM_Sharp
-	;	SetOutPath "$INSTDIR2\modloader\"
-	;	File /r ".\SIZZZ\DYOM Sharp"
+		SetOutPath "$INSTDIR2\modloader\"
+		File /r ".\SIZZZ\DYOM Sharp"
 		;if installed_addons = '', add raw data
 		;if installed_addons not '' format then write
 		StrCpy $7 '"DYOM_Sharp"'
@@ -120,51 +120,51 @@ SectionGroup "SIZZZ's Addons" SIZZZ
 	SectionEnd
 	
 	Section "Machine Gun" MachineGun
-	;	File /r ".\SIZZZ\Machine Gun"
+		File /r ".\SIZZZ\Machine Gun"
 		StrCpy $7 '"MachineGun"'
 		Call WriteJSON
 
 	SectionEnd
 
 	Section "Darkness Effect" DarkEffect
-	;	File /r ".\SIZZZ\Darkness Effect"
+		File /r ".\SIZZZ\Darkness Effect"
 		StrCpy $7 '"DarkEffect"'
 		Call WriteJSON
 	SectionEnd
 	
 
 	Section "Working Dynamites" WDynamites
-	;	File /r ".\SIZZZ\Working Dynamites"
+		File /r ".\SIZZZ\Working Dynamites"
 		StrCpy $7 '"WDynamites"'
 		Call WriteJSON
 	SectionEnd
 
 	Section "Road Spikes" RoadSpikes
-	;	File /r ".\SIZZZ\Road Spikes"
+		File /r ".\SIZZZ\Road Spikes"
 		StrCpy $7 '"RoadSpikes"'
 		Call WriteJSON
 	SectionEnd
 
 	Section "Disable teleport health regeneration" TeleportHealth
-	;	File /r ".\SIZZZ\Disable TP Health Regen"
+		File /r ".\SIZZZ\Disable TP Health Regen"
 		StrCpy $7 '"TeleportHealth"'
 		Call WriteJSON
 	SectionEnd
 
 	Section "CCTV Cameras" CCTV
-	;	File /r ".\SIZZZ\CCTV Camera"
+		File /r ".\SIZZZ\CCTV Camera"
 		StrCpy $7 '"CCTV"'
 		Call WriteJSON
 	SectionEnd
 
 	Section "Phone talk animation" PhoneAnim
-	;	File /r ".\SIZZZ\Phone Animation"
+		File /r ".\SIZZZ\Phone Animation"
 		StrCpy $7 '"PhoneAnim"'
 		Call WriteJSON
 	SectionEnd
 
 	Section "Weapon Shops" WeaponShops
-	;	File /r ".\SIZZZ\Weapon Shops"
+		File /r ".\SIZZZ\Weapon Shops"
 		StrCpy $7 '"WeaponShops"'
 		Call WriteJSON
 	SectionEnd
@@ -172,13 +172,13 @@ SectionGroupEnd
 
 SectionGroup "Axoez's Addons" Axoez
 	Section "Time selection in milliseconds" TimeMs
-	;	File /r ".\AXOEZ\Time Selection in Milliseconds"
+		File /r ".\AXOEZ\Time Selection in Milliseconds"
 		StrCpy $7 '"TimeMs"'
 		Call WriteJSON
 	SectionEnd
 	
 	Section "Phonecall Skip" PhoneSkip
-	;	File /r ".\AXOEZ\Phonecall Skip"
+		File /r ".\AXOEZ\Phonecall Skip"
 		StrCpy $7 '"PhoneSkip"'
 		Call WriteJSON
 	SectionEnd
@@ -186,7 +186,7 @@ SectionGroupEnd
 
 SectionGroup "Kumamon's Addons" Kumamon
 	Section "SA:MP Objects" SAMP
-	;	File /r ".\KUMAMON\SAMP Objects"
+		File /r ".\KUMAMON\SAMP Objects"
 		StrCpy $7 '"SAMP"'
 		Call WriteJSON
 	SectionEnd
@@ -262,7 +262,7 @@ FunctionEnd
 Function .onInstSuccess
 	# Creates a .JSON file to store all the install information
 	# (i.e: addons installed, dyom version)
-	FileOpen $8 "$INSTDIR\INST.json" w
+	FileOpen $8 "$INSTDIR\DYOM\INST.json" w
 	# JSON syntax requires forward slashes (/)
 	${StrRep} $0 "$INSTDIR" "\" "/"
 	${StrRep} $1 "$INSTDIR2" "\" "/"
@@ -271,7 +271,8 @@ Function .onInstSuccess
 						"version": "$VERSION",$\n$\t\
 						"instDir": "$0",$\n$\t\
 						"instDir2": "$1",$\n$\t\
-						"addons": [$INSTALLED_ADDONS]$\n\
+						"addons": [$INSTALLED_ADDONS],$\n$\t\
+						"missions": [{"slot": 1}, {"slot": 2}, {"slot": 3}, {"slot": 4}, {"slot": 5}, {"slot": 6}, {"slot": 7}, {"slot": 8}]$\n\
 					}`
 	FileClose $8
 FunctionEnd

@@ -1,6 +1,7 @@
 const fs = require("fs-extra");
 const decompress = require("decompress");
-const { ipcRenderer } = require("electron");
+const { ipcRenderer, shell } = require("electron");
+const path = require("path");
 
 let location = null;
 
@@ -23,14 +24,15 @@ function handleInstall() {
   } else {
     document.getElementById("btn-install").setAttribute("disabled", "true");
     document.getElementById("txt-install").innerText =
-      "Click here to select the .rar file to install";
+      "Click here to select the .zip file to install";
   }
 }
 
 function install() {
   document.querySelector("body").style.cursor = "wait";
   document.getElementById("btn-install").setAttribute("disabled", "true");
-  decompress(location, __dirname + "\\temp\\")
+
+  decompress(location, `.\\temp\\`)
     .then((files) => {
       let result = null;
       let shouldRemove = false;
@@ -47,10 +49,7 @@ function install() {
         if (result === 0) {
           try {
             fs.removeSync(`${userJSON.instDir}\\DSL\\`);
-            fs.copySync(
-              `${__dirname}\\temp\\DSL\\`,
-              `${userJSON.instDir}\\DSL\\`
-            );
+            fs.copySync(`.\\temp\\DSL\\`, `${userJSON.instDir}\\DSL\\`);
           } catch (err) {
             console.log(err);
           }
@@ -68,7 +67,7 @@ function install() {
           if (missionJSON.sdFoldersArray.length > 0) {
             for (var i = 0; i < missionJSON.sdFoldersArray.length; i++) {
               fs.copySync(
-                `${__dirname}\\temp\\SD\\${missionJSON.sdFoldersArray[i]}`,
+                `.\\temp\\SD\\${missionJSON.sdFoldersArray[i]}`,
                 `${userJSON.instDir}\\SD\\${missionJSON.sdFoldersArray[i]}`
               );
             }
@@ -84,7 +83,7 @@ function install() {
           }
           if (missionJSON.modloaderFolderName !== null) {
             fs.copySync(
-              `${__dirname}\\temp\\modloader\\${missionJSON.modloaderFolderName}`,
+              `.\\temp\\modloader\\${missionJSON.modloaderFolderName}`,
               `${userJSON.instDir2}\\modloader\\${missionJSON.modloaderFolderName}`
             );
           }
@@ -92,14 +91,19 @@ function install() {
             copyRequiredAddons(missionJSON);
           }
           try {
-            (userJSON.dsl = {
+            userJSON.dsl = {
               name: missionJSON.name,
               author: missionJSON.author,
               sdFoldersArray: missionJSON.sdFoldersArray,
               modloaderFolderName: missionJSON.modloaderFolderName,
               requiredAddons: missionJSON.requiredAddons,
-            }),
-              fs.writeJsonSync("./INST.json", userJSON);
+            };
+            for (var i = 0; i < missionJSON.requiredAddons.length; i++) {
+              if (!userJSON.addons.includes(missionJSON.requiredAddons[i])) {
+                userJSON.addons.push(missionJSON.requiredAddons[i]);
+              }
+            }
+            fs.writeJsonSync("./INST.json", userJSON);
           } catch (err) {
             console.log(err);
           }
@@ -168,7 +172,7 @@ function install() {
           if (missionJSON.missionFilesArray.length > 0) {
             for (var i = 0; i < missionJSON.missionFilesArray.length; i++) {
               fs.copySync(
-                `${__dirname}\\temp\\${missionJSON.missionFilesArray[i]}`,
+                `.\\temp\\${missionJSON.missionFilesArray[i]}`,
                 `${userJSON.instDir}\\${missionJSON.missionFilesArray[i]}`
               );
             }
@@ -176,14 +180,14 @@ function install() {
           if (missionJSON.sdFoldersArray.length > 0) {
             for (var i = 0; i < missionJSON.sdFoldersArray.length; i++) {
               fs.copySync(
-                `${__dirname}\\temp\\SD\\${missionJSON.sdFoldersArray[i]}`,
+                `.\\temp\\SD\\${missionJSON.sdFoldersArray[i]}`,
                 `${userJSON.instDir}\\SD\\${missionJSON.sdFoldersArray[i]}`
               );
             }
           }
           if (missionJSON.modloaderFolderName !== null) {
             fs.copySync(
-              `${__dirname}\\temp\\modloader\\${missionJSON.modloaderFolderName}`,
+              `.\\temp\\modloader\\${missionJSON.modloaderFolderName}`,
               `${userJSON.instDir2}\\modloader\\${missionJSON.modloaderFolderName}`
             );
           }
@@ -191,15 +195,20 @@ function install() {
             copyRequiredAddons(missionJSON);
           }
           try {
-            (userJSON.mp = {
+            userJSON.mp = {
               name: missionJSON.name,
               author: missionJSON.author,
               missionFilesArray: missionJSON.missionFilesArray,
               sdFoldersArray: missionJSON.sdFoldersArray,
               modloaderFolderName: missionJSON.modloaderFolderName,
               requiredAddons: missionJSON.requiredAddons,
-            }),
-              fs.writeJsonSync("./INST.json", userJSON);
+            };
+            for (var i = 0; i < missionJSON.requiredAddons.length; i++) {
+              if (!userJSON.addons.includes(missionJSON.requiredAddons[i])) {
+                userJSON.addons.push(missionJSON.requiredAddons[i]);
+              }
+            }
+            fs.writeJsonSync("./INST.json", userJSON);
           } catch (err) {
             console.log(err);
           }
@@ -293,13 +302,10 @@ function install() {
           // and copy file
           try {
             fs.renameSync(
-              `${__dirname}\\temp\\${missionJSON.missionFileName}`,
-              `${__dirname}\\temp\\${DYOM}`
+              `.\\temp\\${missionJSON.missionFileName}`,
+              `.\\temp\\${DYOM}`
             );
-            fs.copySync(
-              `${__dirname}\\temp\\${DYOM}`,
-              `${userJSON.instDir}\\${DYOM}`
-            );
+            fs.copySync(`.\\temp\\${DYOM}`, `${userJSON.instDir}\\${DYOM}`);
           } catch (err) {
             console.log(err);
           }
@@ -307,7 +313,7 @@ function install() {
           // Copy SD folder
           if (missionJSON.sdFolderName !== null) {
             fs.copySync(
-              `${__dirname}\\temp\\SD\\${missionJSON.sdFolderName}`,
+              `.\\temp\\SD\\${missionJSON.sdFolderName}`,
               `${userJSON.instDir}\\SD\\${missionJSON.sdFolderName}`
             );
           }
@@ -315,7 +321,7 @@ function install() {
           // Copy modloader folder
           if (missionJSON.modloaderFolderName !== null) {
             fs.copySync(
-              `${__dirname}\\temp\\modloader\\${missionJSON.modloaderFolderName}`,
+              `.\\temp\\modloader\\${missionJSON.modloaderFolderName}`,
               `${userJSON.instDir2}\\modloader\\${missionJSON.modloaderFolderName}`
             );
           }
@@ -327,7 +333,7 @@ function install() {
 
           // Update user json
           try {
-            (userJSON.missions[slot] = {
+            userJSON.missions[slot] = {
               slot: slot + 1,
               name: missionJSON.name,
               author: missionJSON.author,
@@ -335,8 +341,13 @@ function install() {
               sdFolderName: missionJSON.sdFolderName,
               modloaderFolderName: missionJSON.modloaderFolderName,
               requiredAddons: missionJSON.requiredAddons,
-            }),
-              fs.writeJsonSync("./INST.json", userJSON);
+            };
+            for (var i = 0; i < missionJSON.requiredAddons.length; i++) {
+              if (!userJSON.addons.includes(missionJSON.requiredAddons[i])) {
+                userJSON.addons.push(missionJSON.requiredAddons[i]);
+              }
+            }
+            fs.writeJsonSync("./INST.json", userJSON);
           } catch (err) {
             console.log(err);
           }
@@ -344,18 +355,27 @@ function install() {
         if (result === 1) return;
       }
     })
+    .catch((err) => {
+      console.log(err);
+    })
     .then(() => {
-      fs.removeSync(__dirname + "\\temp\\");
+      fs.removeSync(`.\\temp\\`);
       document.getElementById("btn-install").removeAttribute("disabled");
       document.querySelector("body").style.cursor = "auto";
+      // Refresh main window (to render the installed mission in InstalledMission selection)
+      ipcRenderer.sendSync("inst-success");
     });
 }
 
 function readJSONFiles() {
   // Read mission's json
-  missionJSON = JSON.parse(
-    fs.readFileSync(__dirname + "/temp/INST.json", "utf-8")
-  );
+  try {
+    missionJSON = JSON.parse(fs.readFileSync("./temp/INST.json", "utf-8"));
+  } catch (err) {
+    fs.removeSync(`.\\temp\\`);
+    ipcRenderer.sendSync("install-error-instjson");
+    return window.close();
+  }
 
   // Read user's json
   userJSON = JSON.parse(fs.readFileSync("./INST.json", "utf-8"));
@@ -396,7 +416,7 @@ function copyRequiredAddons(json) {
         break;
     }
     fs.copySync(
-      `${__dirname}\\temp\\modloader\\${folder}`,
+      `.\\temp\\modloader\\${folder}`,
       `${userJSON.instDir2}\\modloader\\${folder}`
     );
   }

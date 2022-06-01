@@ -1,5 +1,6 @@
 {
   "name": "DYOM",
+  "productName": "DYOM",
   "version": "8.1.0",
   "description": "DYOM Executable",
   "main": "main.js",
@@ -7,10 +8,12 @@
   "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "dev": "nodemon --watch . --exec \"electron . --debug\""
+    "dev": "nodemon --watch . --exec \"electron . --debug\"",
+    "package-win": "electron-packager . DYOM --overwrite --asar=true --platform=win32 --arch=ia32 --icon=pages/img/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"DYOM\""
   },
   "devDependencies": {
-    "electron": "^18.2.0"
+    "electron": "^18.2.0",
+    "electron-packager": "^15.5.1"
   },
   "dependencies": {
     "archiver": "^5.3.1",

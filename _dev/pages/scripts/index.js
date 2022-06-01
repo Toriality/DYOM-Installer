@@ -32,6 +32,7 @@ window.addEventListener("DOMContentLoaded", () => {
       if (type === "storyline") {
         // Delete DSL
         fs.removeSync(`${userJSON.instDir}\\DSL\\`);
+        fs.mkdirSync(`${userJSON.instDir}\\DSL\\`);
         // Delete SD folders
         if (userJSON.dsl.sdFoldersArray.length > 0) {
           for (var i = 0; i < userJSON.dsl.sdFoldersArray.length; i++) {
@@ -66,7 +67,7 @@ window.addEventListener("DOMContentLoaded", () => {
           }
         }
         // Modloader folder
-        if (userJSON.mp.modloaderFolderName.length !== null) {
+        if (userJSON.mp.modloaderFolderName !== null) {
           fs.removeSync(
             `${userJSON.instDir2}\\modloader\\${userJSON.mp.modloaderFolderName}`
           );

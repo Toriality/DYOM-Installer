@@ -5,7 +5,12 @@ const {
   ipcMain,
   shell,
   dialog,
+  ipcRenderer,
 } = require("electron");
+
+const path = require("path");
+
+const fs = require("fs-extra");
 
 let icon = `${__dirname}\pages\img\icon.ico`;
 
@@ -31,7 +36,7 @@ app.whenReady().then(() => {
     icon: icon,
   });
 
-  require("electron").globalShortcut.register("CommandOrControl+D", () => {
+  require("electron").globalShortcut.register("CommandOrControl+Alt+D", () => {
     require("electron").dialog.showMessageBox({
       icon: icon,
       title: "DYOM Message",
@@ -46,6 +51,52 @@ app.whenReady().then(() => {
     return {
       action: "allow",
     };
+  });
+});
+
+ipcMain.on("json-not-found-1", (event) => {
+  dialog.showMessageBoxSync(mainWindow, {
+    title: "Path configuration",
+    type: "warning",
+    buttons: ["OK"],
+    message: "Please select your GTA San Andreas USER FILES directory!",
+  });
+  event.returnValue = dialog.showOpenDialogSync(mainWindow, {
+    title: "Locate your GTA SA User Files folder",
+    properties: ["openDirectory"],
+  });
+});
+
+ipcMain.on("json-not-found-2", (event) => {
+  dialog.showMessageBoxSync(mainWindow, {
+    title: "Path configuration",
+    type: "warning",
+    buttons: ["OK"],
+    message: "Now please select your GTA San Andreas ROOT directory!",
+  });
+  event.returnValue = dialog.showOpenDialogSync(mainWindow, {
+    title: "Locate your GTA SA root folder",
+    properties: ["openDirectory"],
+  });
+});
+
+ipcMain.on("json-error", (event, arg) => {
+  dialog.showMessageBoxSync(mainWindow, {
+    title: "Error creating INST.json",
+    type: "error",
+    buttons: ["OK"],
+    message: `Something went wrong while trying to configurate the paths. Error log bellow:\n\n${arg}`,
+  });
+  app.quit();
+});
+
+ipcMain.on("install-error-instjson", (event) => {
+  event.returnValue = dialog.showMessageBoxSync(installWindow, {
+    title: "Installation error",
+    type: "error",
+    buttons: ["OK"],
+    message:
+      "This mission wasn't uploaded using this tool. Automatically installing missions that weren't made utilizing DYOM.exe tools is a feature still working in progress.",
   });
 });
 
@@ -73,6 +124,7 @@ ipcMain.on("btn-install", () => {
     icon: icon,
   });
   installWindow.loadFile("./pages/install.html");
+  installWindow.setMenuBarVisibility(false);
 });
 
 ipcMain.on("single-mission", () => {
@@ -88,6 +140,7 @@ ipcMain.on("single-mission", () => {
     icon: icon,
   });
   uploadWindow.loadFile("./pages/uploadMission.html");
+  uploadWindow.setMenuBarVisibility(false);
 });
 
 ipcMain.on("mission-pack", () => {
@@ -103,6 +156,7 @@ ipcMain.on("mission-pack", () => {
     icon: icon,
   });
   uploadWindow.loadFile("./pages/uploadMP.html");
+  uploadWindow.setMenuBarVisibility(false);
 });
 
 ipcMain.on("storyline", () => {
@@ -118,18 +172,23 @@ ipcMain.on("storyline", () => {
     icon: icon,
   });
   uploadWindow.loadFile("./pages/uploadStoryline.html");
+  uploadWindow.setMenuBarVisibility(false);
 });
 
 ipcMain.on("btn-exit", () => {
   app.quit();
 });
 
-ipcMain.on("btn-openfolder", () => {
-  shell.openPath(__dirname);
+ipcMain.on("btn-openfolder", (event, userJSON) => {
+  shell.openPath(path.join(userJSON.instDir));
+  console.log(path.join(userJSON.instDir));
 });
 
-ipcMain.on("btn-run", () => {
-  shell.openPath(`${__dirname}\"Start GTA.lnk`);
+ipcMain.on("btn-run", (event, userJSON) => {
+  if (fs.pathExistsSync(path.join(userJSON.instDir2, "GTA_SA.exe")))
+    return shell.openPath(path.join(userJSON.instDir2, "GTA_SA.exe"));
+  if (fs.pathExistsSync(path.join(userJSON.instDir2, "GTA-SA.exe")))
+    return shell.openPath(path.join(userJSON.instDir2, "GTA-SA.exe"));
 });
 
 ipcMain.on("dsl-exists", (event, arg) => {
@@ -189,9 +248,34 @@ ipcMain.on("slot", (event, arg) => {
       "Slot 6",
       "Slot 7",
       "Slot 8",
+      "Cancel",
     ],
     defaultId: 0,
+    cancelId: 8,
     title: "DYOM Mission slot selection",
+  });
+});
+
+ipcMain.on("inst-success", (event) => {
+  event.returnValue = dialog.showMessageBoxSync(installWindow, {
+    message: `Installation completed successfully!`,
+    type: "none",
+    buttons: ["OK"],
+    defaultId: 0,
+    title: "Done!",
+    cancelId: 0,
+  });
+  mainWindow.reload();
+});
+
+ipcMain.on("upload-success", (event) => {
+  event.returnValue = dialog.showMessageBoxSync(uploadWindow, {
+    message: `Upload completed successfully!`,
+    type: "none",
+    buttons: ["Open folder", "Continue"],
+    defaultId: 0,
+    title: "Done!",
+    cancelId: 1,
   });
 });
 

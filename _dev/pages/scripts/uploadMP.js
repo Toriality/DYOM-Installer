@@ -1,5 +1,6 @@
 import { buildStatus, randomTimeout } from "./loading.js";
 
+const { ipcRenderer, shell } = require("electron");
 const fs = require("fs-extra");
 const archiver = require("archiver");
 
@@ -23,6 +24,8 @@ let requiredAddons = [];
 // User Files location
 let userFilesLoc = null;
 
+let userJSON;
+
 window.addEventListener("DOMContentLoaded", () => {
   // Read INST.json
   fs.readFile("./INST.json", "utf-8", (err, instJSON) => {
@@ -31,12 +34,12 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
     try {
-      const jsonFile = JSON.parse(instJSON);
+      userJSON = JSON.parse(instJSON);
       // User Files location
-      userFilesLoc = jsonFile.instDir; // gtasa userfiles dir
+      userFilesLoc = userJSON.instDir; // gtasa userfiles dir
       // Checks which addons are installed
       // For each addons installed, create checkbox
-      jsonFile.addons.forEach((element) => {
+      userJSON.addons.forEach((element) => {
         // The addons bellow aren't addons that the user needs to install to play any missions
         if (
           element === "DYOM_Sharp" ||
@@ -98,7 +101,7 @@ window.addEventListener("DOMContentLoaded", () => {
     setModloaderFolderNmae(modloaderFolder);
   }
 
-  // Create .rar archive for the mission
+  // Create .zip archive for the mission
   const btn_upload = document.getElementById("btn-upload");
   btn_upload.addEventListener("click", handleUpload, false);
 
@@ -148,10 +151,10 @@ window.addEventListener("DOMContentLoaded", () => {
       for (var i = 0; i < missionFilesLoc.length; i++) {
         fs.copySync(
           `${missionFilesLoc[i]}`,
-          `${__dirname}\\temp\\${missionFilesArray[i]}`
+          `.\\temp\\${missionFilesArray[i]}`
         );
       }
-      //fs.copySync(`${missionFile}\\`, `${__dirname}\\temp\\${missionFileName}`);
+      //fs.copySync(`${missionFile}\\`, `.\\temp\\${missionFileName}`);
     } catch (err) {
       console.log("Got an error while copying DYOM.dat file", err);
     }
@@ -163,10 +166,10 @@ window.addEventListener("DOMContentLoaded", () => {
         for (var i = 0; i < sdFoldersLoc.length; i++) {
           fs.copySync(
             `${sdFoldersLoc[i]}\\`,
-            `${__dirname}\\temp\\SD\\${sdFoldersArray[i]}\\`
+            `.\\temp\\SD\\${sdFoldersArray[i]}\\`
           );
         }
-        //fs.copySync(`${sdFolder}\\`, `${__dirname}\\temp\\SD\\${sdFolderName}`);
+        //fs.copySync(`${sdFolder}\\`, `.\\temp\\SD\\${sdFolderName}`);
       } catch (err) {
         console.log("Got an error while copying SD folder", err);
       }
@@ -178,7 +181,7 @@ window.addEventListener("DOMContentLoaded", () => {
         await setStatus("modloader");
         fs.copySync(
           `${modloaderFolder}\\`,
-          `${__dirname}\\temp\\modloader\\${modloaderFolderName}`
+          `.\\temp\\modloader\\${modloaderFolderName}`
         );
       } catch (err) {
         console.log("Got an error while copying modloader folder", err);
@@ -198,7 +201,7 @@ window.addEventListener("DOMContentLoaded", () => {
             await setStatus("MachineGun");
             fs.copySync(
               `${instDir}\\modloader\\Machine Gun`,
-              `${__dirname}\\temp\\modloader\\Machine Gun`
+              `.\\temp\\modloader\\Machine Gun`
             );
           } catch (err) {
             console.log(err);
@@ -210,7 +213,7 @@ window.addEventListener("DOMContentLoaded", () => {
             await setStatus("DarkEfect");
             fs.copySync(
               `${instDir}\\modloader\\Darkness Effect`,
-              `${__dirname}\\temp\\modloader\\Darkness Effect`
+              `.\\temp\\modloader\\Darkness Effect`
             );
           } catch (err) {
             console.log(err);
@@ -222,7 +225,7 @@ window.addEventListener("DOMContentLoaded", () => {
             await setStatus("WDynamites");
             fs.copySync(
               `${instDir}\\modloader\\Working Dynamites`,
-              `${__dirname}\\temp\\modloader\\Working Dynamites`
+              `.\\temp\\modloader\\Working Dynamites`
             );
           } catch (err) {
             console.log(err);
@@ -234,7 +237,7 @@ window.addEventListener("DOMContentLoaded", () => {
             await setStatus("RoadSpikes");
             fs.copySync(
               `${instDir}\\modloader\\Road Spikes`,
-              `${__dirname}\\temp\\modloader\\Road Spikes`
+              `.\\temp\\modloader\\Road Spikes`
             );
           } catch (err) {
             console.log(err);
@@ -246,7 +249,7 @@ window.addEventListener("DOMContentLoaded", () => {
             await setStatus("TeleportHealth");
             fs.copySync(
               `${instDir}\\modloader\\Disable TP health regen`,
-              `${__dirname}\\temp\\modloader\\Disable TP health regen`
+              `.\\temp\\modloader\\Disable TP health regen`
             );
           } catch (err) {
             console.log(err);
@@ -258,7 +261,7 @@ window.addEventListener("DOMContentLoaded", () => {
             await setStatus("CCTV");
             fs.copySync(
               `${instDir}\\modloader\\CCTV Camera`,
-              `${__dirname}\\temp\\modloader\\CCTV Camera`
+              `.\\temp\\modloader\\CCTV Camera`
             );
           } catch (er) {
             console.log(err);
@@ -270,7 +273,7 @@ window.addEventListener("DOMContentLoaded", () => {
             await setStatus("PhoneAnim");
             fs.copySync(
               `${instDir}\\modloader\\Phone animation`,
-              `${__dirname}\\temp\\modloader\\Phone animation`
+              `.\\temp\\modloader\\Phone animation`
             );
           } catch (err) {
             console.log(err);
@@ -282,7 +285,7 @@ window.addEventListener("DOMContentLoaded", () => {
             await setStatus("WeaponShops");
             fs.copySync(
               `${instDir}\\modloader\\Weapon Shops`,
-              `${__dirname}\\temp\\modloader\\Weapon Shops`
+              `.\\temp\\modloader\\Weapon Shops`
             );
           } catch (err) {
             console.log(err);
@@ -294,7 +297,7 @@ window.addEventListener("DOMContentLoaded", () => {
             await setStatus("SAMP");
             fs.copySync(
               `${instDir}\\modloader\\SAMP Objects`,
-              `${__dirname}\\temp\\modloader\\SAMP Objects`
+              `.\\temp\\modloader\\SAMP Objects`
             );
           } catch (err) {
             console.log(err);
@@ -320,7 +323,7 @@ window.addEventListener("DOMContentLoaded", () => {
         requiredAddons,
       };
       json = JSON.stringify(json);
-      fs.writeFileSync(`${__dirname}\\temp\\INST.json`, json);
+      fs.writeFileSync(`.\\temp\\INST.json`, json);
     } catch (err) {
       console.log("Got an error while writing inst.json", err);
     }
@@ -329,7 +332,7 @@ window.addEventListener("DOMContentLoaded", () => {
     try {
       await setStatus("readme");
       fs.writeFileSync(
-        `${__dirname}\\temp\\README.txt`,
+        `.\\temp\\README.txt`,
         `
 ======================================================
 ### ${name.toUpperCase()}
@@ -362,7 +365,9 @@ Have fun!!!
     // create a file to stream archive data to.
     try {
       await setStatus("package");
-      const output = fs.createWriteStream(`${__dirname}\\${name}.zip`);
+      const output = fs.createWriteStream(
+        `${userJSON.instDir}\\MyMissions\\${name}.zip`
+      );
       const archive = archiver("zip", {
         zlib: { level: 0 }, // Sets the compression level.
       });
@@ -397,6 +402,15 @@ Have fun!!!
         throw err;
       });
 
+      // Make MyMissions dir
+      try {
+        if (!fs.existsSync(userJSON.instDir + "/MyMissions")) {
+          fs.mkdirSync(userJSON.instDir + "/MyMissions");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+
       // pipe archive data to the file
       try {
         await setStatus("processing");
@@ -408,7 +422,7 @@ Have fun!!!
       // Archive files and folders
       try {
         await setStatus("almost-done");
-        archive.directory(`${__dirname}\\temp\\`, false);
+        archive.directory(`.\\temp\\`, false);
       } catch (err) {
         console.log(err);
       }
@@ -417,8 +431,13 @@ Have fun!!!
       // 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
       archive.finalize().then(() => {
         setStatus("temp");
-        fs.removeSync(`${__dirname}\\temp\\`);
+        fs.removeSync(`.\\temp\\`);
         document.getElementById("overlay").remove();
+        let result = ipcRenderer.sendSync("upload-success");
+        if (result === 0)
+          return shell.openPath(
+            require("path").join(userJSON.instDir, "myMissions")
+          );
       });
     } catch (err) {
       console.log(err);
