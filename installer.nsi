@@ -233,11 +233,11 @@ Function .onInit
 	
 	# Makes a search into the most common GTA installation folders to
 	# check where the GTA_SA.exe (or gta-sa.exe) is located
-	${locate::Open} "${STEAM_DIR}|${MIXMODS_DIR}|C:\|$PROGRAMFILES|${OTHER_DIR_STEAM}|D:\" `\
+	${locate::Open} "${STEAM_DIR}|${MIXMODS_DIR}|${OTHER_DIR_STEAM}|${DEFAULT_DIR}" `\
 					/F=1 \
 					/D=0 \
 					/M=gta?sa.exe \
-					/A=-HIDDEN|-SYSTEM \
+					/A=-HIDDEN|-SYSTEM \	
 					/-PN=Temp|WINDOWS` $0
 					
 	StrCmp $0 -1 0 loop
