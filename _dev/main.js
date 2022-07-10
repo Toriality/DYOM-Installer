@@ -5,18 +5,80 @@ const {
   ipcMain,
   shell,
   dialog,
-  ipcRenderer,
 } = require("electron");
 
 const path = require("path");
 
 const fs = require("fs-extra");
+const { fstatSync } = require("fs");
 
 let icon = `${__dirname}\pages\img\icon.ico`;
 
 let mainWindow = null;
 let installWindow = null;
 let uploadWindow = null;
+let userJSON = null;
+
+// Enable live-reload
+app.isPackaged ||
+  require("electron-reload")(__dirname, {
+    electron: path.join(__dirname, "node_modules/electron/dist/electron.exe"),
+  });
+
+function createUserJSON(jsonPath) {
+  dialog.showMessageBoxSync(mainWindow, {
+    title: "Path configuration",
+    type: "warning",
+    buttons: ["OK"],
+    message: "Please select your GTA San Andreas USER FILES directory!",
+  });
+  const instDir1 = dialog.showOpenDialogSync(mainWindow, {
+    title: "Locate your GTA SA User Files folder",
+    properties: ["openDirectory"],
+  });
+  dialog.showMessageBoxSync(mainWindow, {
+    title: "Path configuration",
+    type: "warning",
+    buttons: ["OK"],
+    message: "Now please select your GTA San Andreas ROOT directory!",
+  });
+  const instDir2 = dialog.showOpenDialogSync(mainWindow, {
+    title: "Locate your GTA SA root folder",
+    properties: ["openDirectory"],
+  });
+
+  // If user cancels, quit app
+  if (!instDir1 || !instDir2) return app.quit();
+
+  fs.createFileSync(jsonPath);
+  fs.writeJsonSync(jsonPath, {
+    version: "8.1",
+    instDir1: instDir1[0],
+    instDir2: instDir2[0],
+    addons: [],
+    missions: [
+      { slot: 1 },
+      { slot: 2 },
+      { slot: 3 },
+      { slot: 4 },
+      { slot: 5 },
+      { slot: 6 },
+      { slot: 7 },
+      { slot: 8 },
+    ],
+  });
+}
+
+// Load user JSON
+function loadUserJSON() {
+  const jsonPath = path.join(".", "user.json");
+  try {
+    userJSON = fs.readJsonSync(jsonPath);
+  } catch (err) {
+    createUserJSON(jsonPath);
+    loadUserJSON();
+  }
+}
 
 app.whenReady().then(() => {
   const primaryDisplay = screen.getPrimaryDisplay();
@@ -26,31 +88,99 @@ app.whenReady().then(() => {
     width: width * 0.5,
     height: height * 0.2,
     webPreferences: {
-      preload: `${__dirname}/preload.js`,
-      enableRemoteModule: true,
-      nodeIntegration: true,
-      contextIsolation: false,
+      preload: __dirname + "/preload.js",
+      contextIsolation: true,
     },
     resizable: false,
     frame: false,
     icon: icon,
   });
 
-  require("electron").globalShortcut.register("CommandOrControl+Alt+D", () => {
-    require("electron").dialog.showMessageBox({
-      icon: icon,
-      title: "DYOM Message",
-      message: "DYOM is awesome!",
-    });
-  });
+  loadUserJSON();
 
-  mainWindow.loadFile("./pages/index.html");
-  //mainWindow.removeMenu();
+  mainWindow.loadFile(__dirname + "/home/index.html");
+
+  // Open developer console if in development mode
+  app.isPackaged || mainWindow.webContents.toggleDevTools();
+
   mainWindow.on("closed", () => app.quit());
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     return {
       action: "allow",
     };
+  });
+});
+
+ipcMain.handle("loadUserJSON", () => {});
+
+ipcMain.handle("exit", () => {
+  app.quit();
+});
+
+ipcMain.handle("run", () => {
+  if (fs.pathExistsSync(path.join(userJSON.instDir2, "GTA_SA.exe")))
+    return shell.openPath(path.join(userJSON.instDir2, "GTA_SA.exe"));
+  if (fs.pathExistsSync(path.join(userJSON.instDir2, "GTA-SA.exe")))
+    return shell.openPath(path.join(userJSON.instDir2, "GTA-SA.exe"));
+});
+
+ipcMain.handle("openInstall", () => {
+  installWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      preload: __dirname + "/preload.js",
+      contextIsolation: true,
+    },
+    resizable: true,
+    icon: icon,
+  });
+  installWindow.loadFile("./install/index.html");
+  installWindow.setMenuBarVisibility(false);
+  installWindow.webContents.openDevTools();
+});
+
+const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+ipcMain.handle("install", async (event, file) => {
+  const decompress = require("decompress");
+  const copySchema = {
+    dyomFiles: [],
+    sdFolder: false,
+    sdCodes: [],
+    // modloaderFolder: Boolean,
+    // modloaderFiles: [String],
+    // readMe: Boolean,
+    // dslFolder: Boolean,
+    // dslFiles: [String],
+  };
+  const dyom = /DYOM\d.dat$/g;
+  const sd = /([A-Z]|\d){5}\/$/;
+
+  decompress(file, path.join(".", "/temp/")).then((files) => {
+    let canBrowseSdCode = false;
+    let canBrowseModloader = false;
+
+    for (const key in files) {
+      const filepath = files[key].path;
+      const type = files[key].type;
+      // Prepare files to copy
+      if (dyom.exec(filepath) && type == "file") {
+        copySchema.dyomFiles.push(filepath);
+      }
+      if (filepath.includes("SD/") && type == "directory") {
+        copySchema.sdFolder = true;
+      }
+      if (sd.exec(filepath) && !copySchema.sdFolder) {
+        let code = sd.exec(filepath)[0];
+        code = code.substring(0, code.length - 1);
+        copySchema.sdCodes.push(code);
+      }
+    }
+
+    console.log(copySchema);
+
+    fs.removeSync(path.join(".", "temp"));
   });
 });
 
