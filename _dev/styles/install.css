@@ -1,0 +1,11 @@
+#btn-install[disabled]:hover {
+  background-color: inherit;
+}
+#btn-select-rar {
+  margin-right: 18px;
+}
+body {
+  display: flex;
+  justify-content: center;
+  padding: 30vh 0 0 0;
+}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="../styles/index.css" />
+    <link rel="stylesheet" href="../styles/overlays.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <title>Design Your Own Mission</title>
+  </head>
+  <body>
+    <header>Design Your Own Mission 8.1</header>
+
+    <div id="overlay" style="visibility: hidden">
+      <div id="modal-wrapper">
+        <div id="modal-desc">
+          <p>Select one of the options below:<br /><br /></p>
+        </div>
+        <div id="modal">
+          <div id="uploadMission" class="modal-selection">
+            <i class="fa-solid fa-cube"></i>
+            <span>Single mission</span>
+          </div>
+          <div id="uploadMP" class="modal-selection">
+            <i class="fa-solid fa-cubes"></i>
+            <span>Mission Pack</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="page">
+      <div class="flex">
+        <div id="logo">
+          <a target="_blank" href="https://dyom.gtagames.nl">
+            <img src="../images/logo.png" />
+          </a>
+        </div>
+        <div id="buttons">
+          <button id="run" class="btn-expand">Run DYOM</button>
+          <div class="two-btns">
+            <button id="openInstall" class="btn-normal">
+              Install a mission
+            </button>
+            <button id="btn-upload" class="btn-normal">Upload a mission</button>
+          </div>
+          <div class="two-btns">
+            <button id="openFolder" class="btn-normal">Open DYOM folder</button>
+            <button id="exit" class="btn-normal">Exit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <a target="_blank" href="https://discordapp.com/invite/XzqxyV7"
+        ><i class="fa-brands fa-discord"></i>Join our Discord!</a
+      >
+    </footer>
+
+    <script type="module" src="./index.js"></script>
+  </body>
+</html>

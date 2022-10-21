@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="../styles\styles.css" />
+    <link rel="stylesheet" href="../styles/forms.css" />
+    <title>Upload a Mission Pack</title>
+  </head>
+  <body>
+    <form>
+      <div id="frm-main">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required />
+        <label for="author">Author:</label>
+        <input type="text" id="author" required />
+      </div>
+
+      <div id="frm-mission-pack">
+        <label for="mission">
+          <input id="mission" type="file" accept=".dat" multiple required />
+          <p>Select mission files</p>
+          <select id="sel-mission" multiple></select>
+        </label>
+      </div>
+
+      <div id="frm-2">
+        <div>
+          <p>List of SD folders names</p>
+          <div style="width: 100%">
+            <label for="sd1">DYOM1 SD</label>
+            <input id="sd1" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd2">DYOM2 SD</label>
+            <input id="sd2" type="text" style="width: 8ch" maxlength="5" />
+          </div>
+          <div style="width: 100%">
+            <label for="sd3">DYOM3 SD</label>
+            <input id="sd3" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd4">DYOM4 SD</label>
+            <input id="sd4" type="text" style="width: 8ch" maxlength="5" />
+          </div>
+          <div style="width: 100%">
+            <label for="sd5">DYOM5 SD</label>
+            <input id="sd5" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd6">DYOM6 SD</label>
+            <input id="sd6" type="text" style="width: 8ch" maxlength="5" />
+          </div>
+          <div style="width: 100%">
+            <label for="sd7">DYOM7 SD</label>
+            <input id="sd7" type="text" style="width: 8ch" maxlength="5" />
+            <label for="sd8">DYOM8 SD</label>
+            <input id="sd8" type="text" style="width: 8ch" maxlength="5" />
+          </div>
+        </div>
+        <div>
+          <label for="mods">
+            <input id="mods" type="file" webkitdirectory directory multiple />
+            <p>Select modloader folder</p>
+            <select id="sel-mods" multiple></select>
+          </label>
+        </div>
+      </div>
+
+      <button id="btn-upload" type="button">Create mission</button>
+    </form>
+
+    <script type="module" src=".\uploadMP.js"></script>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+body {
+  display: block;
+}
+
+form {
+  margin: 20px 32px;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+#frm-main {
+  display: flex;
+  margin-bottom: 18px;
+}
+#frm-main > input {
+  margin-left: 18px;
+  width: 100%;
+}
+label[for="author"] {
+  margin-left: 18px;
+}
+#author {
+  width: 18ch !important;
+}
+
+#frm-mission {
+  margin-bottom: 18px;
+}
+#frm-mission select {
+  max-height: 2.5rem;
+}
+#frm-mission-pack {
+  margin-bottom: 18px;
+}
+#frm-mission-pack select {
+  min-height: 4rem;
+  max-height: 4rem;
+}
+
+#frm-2 {
+  display: flex;
+  justify-content: space-between;
+}
+#frm-2 select {
+  min-height: 8rem;
+}
+#frm-2 div {
+  width: 100%;
+}
+
+label p {
+  display: inline-block;
+  background-color: #ddd;
+  padding: 2px 18px;
+  margin: 0;
+  cursor: pointer;
+}
+label p:hover {
+  background-color: #ffeecc;
+}
+
+div p {
+  margin: 0;
+}
+
+#addons {
+  margin-top: 18px;
+}
+#addons > div {
+  column-count: 2;
+  color: #555;
+}
+
+#btn-upload {
+  margin-top: 30px;
+  width: 100%;
+}
+
+@keyframes overlay-anim {
+  from {
+    color: white;
+  }
+  to {
+    color: #ff9922;
+  }
+}
+
+#overlay {
+  opacity: 0.95;
+  background: #202020;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  position: fixed;
+  box-shadow: 0px 0px 150px black inset;
+}
+
+#overlay-text {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  user-select: none;
+  text-align: center;
+  animation-name: overlay-anim;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+h1 {
+  margin: 0;
+  font-size: 4.5em;
+  line-height: 100%;
+}
+h2 {
+  opacity: 0.7;
+  margin: 0;
+  white-space: nowrap;
+  font-size: 1.5em;
+  line-height: 100%;
+}

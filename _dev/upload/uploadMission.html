@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="../styles\styles.css" />
+    <link rel="stylesheet" href="../styles/forms.css" />
+    <title>Upload a Mission</title>
+  </head>
+  <body>
+    <form>
+      <div id="frm-main">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required />
+        <label for="author">Author:</label>
+        <input type="text" id="author" required />
+      </div>
+
+      <div id="frm-mission">
+        <label for="mission">
+          <input id="mission" type="file" accept=".dat" required />
+          <p>Select mission file</p>
+          <select id="sel-mission" multiple></select>
+        </label>
+      </div>
+
+      <div id="frm-2">
+        <div>
+          <label for="sd">
+            <input id="sd" type="file" webkitdirectory directory multiple />
+            <p>Select SD folder</p>
+            <select id="sel-sd" multiple></select>
+          </label>
+        </div>
+        <div>
+          <label for="mods">
+            <input id="mods" type="file" webkitdirectory directory multiple />
+            <p>Select modloader folder</p>
+            <select id="sel-mods" multiple></select>
+          </label>
+        </div>
+      </div>
+
+      <button id="btn-upload" type="button">Create mission</button>
+    </form>
+
+    <script type="module" src=".\uploadMission.js"></script>
+  </body>
+</html>

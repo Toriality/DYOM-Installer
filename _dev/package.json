@@ -1,0 +1,26 @@
+{
+  "name": "dyom",
+  "productName": "DYOM",
+  "version": "8.1.0",
+  "description": "DYOM Executable",
+  "main": "main.js",
+  "author": "Toriality",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "package-win": "electron-packager . DYOM --overwrite --asar=true --platform=win32 --arch=ia32 --icon=pages/img/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"DYOM\""
+  },
+  "devDependencies": {
+    "electron": "^18.2.0",
+    "electron-packager": "^15.5.1"
+  },
+  "dependencies": {
+    "archiver": "^5.3.1",
+    "decompress": "^4.2.1",
+    "electron-reload": "^2.0.0-alpha.1",
+    "fs-extra": "^10.1.0",
+    "node-unrar-js": "^2.0.0",
+    "unrar": "^0.2.0",
+    "unrar-promise": "^3.1.0"
+  }
+}
